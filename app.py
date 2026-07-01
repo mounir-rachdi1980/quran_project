@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from streamlit_gsheets import GSheetsConnection
 
-# إعدادات الواجهة والربط المباشر
+# إعدادات الواجهة
 st.set_page_config(page_title="نظام إدارة الجمعية القرآنية", layout="wide")
 
 # محاولة الاتصال بقاعدة البيانات
@@ -12,4 +12,4 @@ try:
     st.success("تم الاتصال بنجاح!")
 except Exception as e:
     st.error("فشل الاتصال بقاعدة البيانات.")
-    st.exception(e)  # سيظهر تفاصيل الخطأ الدقيقة لتحديد المشكلة
+    st.exception(e)
