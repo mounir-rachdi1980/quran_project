@@ -13,7 +13,7 @@ try:
     settings_df = pd.read_csv(sheet_url + "&gid=186638064").dropna(how='all')
     weights = {'الحفظ': float(settings_df.iloc[0]['الحفظ']), 'الرواية': float(settings_df.iloc[0]['الرواية']), 'الدراية': float(settings_df.iloc[0]['الدراية']), 'الحضور': float(settings_df.iloc[0]['الحضور'])} if not settings_df.empty else {'الحفظ': 3.0, 'الرواية': 2.0, 'الدراية': 2.0, 'الحضور': 1.0}
 except:
-    st.error(⚠️ جاري الاتصال بقاعدة البيانات السحابية الحية... يرجى تحديث الصفحة.")
+    st.error("⚠️ جاري الاتصال بقاعدة البيانات السحابية الحية... يرجى تحديث الصفحة.")
     st.stop()
 menu = ["تسجيل طالب جديد", "رصد وتعديل الدرجات", "إعدادات الضوارب (المعاملات)", "استخراج بطاقة الأعداد"]
 choice = st.sidebar.selectbox("قائمة التحكم", menu)
