@@ -5,7 +5,7 @@ st.set_page_config(page_title="نظام إدارة الجمعية القرآني
 st.markdown("<style>[data-testid='stSidebar'] {direction: rtl; text-align: right;} .main .block-container {direction: rtl; text-align: right;} div[data-testid='stForm'] {direction: rtl; text-align: right;} th, td {text-align: right !important;}</style>", unsafe_allow_html=True)
 st.markdown("<h1 style='text-align: center; color: #1E4620;'>🕌 نظام إدارة الجمعية القرآنية السحابي</h1>", unsafe_allow_html=True)
 # الرابط المباشر المكشوف للخادم لضمان القراءة الفورية
-sheet_url = "https://google.com"
+sheet_url = "https://docs.google.com/spreadsheets/d/ضع_هنا_رابط_جدولك_الخاص/export?format=csv"
 try:
     # قراءة البيانات سحابياً بشكل مباشر عبر الرابط الثابت لكل تبويب
     students_df = pd.read_csv(sheet_url + "&gid=0").dropna(how='all')
