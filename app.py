@@ -13,7 +13,7 @@ try:
     settings_df = pd.read_csv(sheet_url + "&gid=186638064").dropna(how='all')
     weights = {'الحفظ': float(settings_df.iloc[0]['الحفظ']), 'الرواية': float(settings_df.iloc[0]['الرواية']), 'الدراية': float(settings_df.iloc[0]['الدراية']), 'الحضور': float(settings_df.iloc[0]['الحضور'])} if not settings_df.empty else {'الحفظ': 3.0, 'الرواية': 2.0, 'الدراية': 2.0, 'الحضور': 1.0}
 except:
-    st.error("⚠️ جاري الاتصال بقاعدة البيانات السحابية الحية... يرجى تحديث الصفحة.")
+    st.error(⚠️ جاري الاتصال بقاعدة البيانات السحابية الحية... يرجى تحديث الصفحة.")
     st.stop()
 menu = ["تسجيل طالب جديد", "رصد وتعديل الدرجات", "إعدادات الضوارب (المعاملات)", "استخراج بطاقة الأعداد"]
 choice = st.sidebar.selectbox("قائمة التحكم", menu)
@@ -32,7 +32,7 @@ elif choice == "تسجيل طالب جديد":
         name = col1.text_input("الاسم الثلاثي")
         dob = col1.date_input("تاريخ الولادة")
         job = col1.text_input("المهنة")
-        last_name = col2.text_input("الالقب")
+        last_name = col2.text_input("اللقب")
         cin = col2.text_input("رقم بطاقة التعريف")
         if st.form_submit_button("عرض المعرف التلقائي الجديد"):
             if name and last_name and cin:
@@ -46,10 +46,10 @@ elif choice == "رصد وتعديل الدرجات":
     if students_df.empty: st.warning("⚠️ لا يوجد طلاب مسجلين حالياً.")
     else:
         students_df['المعرف'], grades_df['المعرف'] = students_df['المعرف'].astype(int), grades_df['المعرف'].astype(int)
-        merged = pd.merge(students_df[['المعرف', 'الاسم الثلاثي', 'الالقب']], grades_df, on='المعرف')
+        merged = pd.merge(students_df[['المعرف', 'الاسم الثلاثي', 'اللقب']], grades_df, on='المعرف')
         student_id = st.selectbox("اختر الطالب بالمعرف", merged['المعرف'])
         current_student = merged[merged['المعرف'] == student_id].iloc[0]
-        st.write(f"📝 الدرجات الحالية للطالب: **{current_student['الاسم الثلاثي']} {current_student['الالقب']}**")
+        st.write(f"📝 الدرجات الحالية للطالب: **{current_student['الاسم الثلاثي']} {current_student['اللقب']}**")
         col1, col2, col3, col4 = st.columns(4)
         col1.metric("الحفظ", f"{current_student['الحفظ']} / 20")
         col2.metric("الرواية", f"{current_student['الرواية']} / 20")
