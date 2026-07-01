@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from streamlit_gsheets import GSheetsConnection
 
+
 # إعدادات واجهة التطبيق باللغة العربية
 st.set_page_config(page_title="نظام إدارة الجمعية القرآنية", layout="wide", page_icon="🕌")
 
