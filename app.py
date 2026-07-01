@@ -1,14 +1,15 @@
 import streamlit as st
 import pandas as pd
-
-# باقي الكود الخاص بك يليهما...
-st.set_page_config(page_title="نظام إدارة الجمعية القرآنية", layout="wide")import streamlit as str
 from streamlit_gsheets import GSheetsConnection
 
+# إعدادات الواجهة والربط المباشر
+st.set_page_config(page_title="نظام إدارة الجمعية القرآنية", layout="wide")
+
+# محاولة الاتصال بقاعدة البيانات
 try:
     conn = st.connection("gsheets", type=GSheetsConnection)
     df = conn.read()
     st.success("تم الاتصال بنجاح!")
 except Exception as e:
     st.error("فشل الاتصال بقاعدة البيانات.")
-    st.exception(e) # هذا سيظهر لك تفاصيل الخطأ الدقيقة لتجده في الـ Logs
+    st.exception(e)  # سيظهر تفاصيل الخطأ الدقيقة لتحديد المشكلة
