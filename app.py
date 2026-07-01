@@ -1,4 +1,8 @@
-import streamlit as str
+import streamlit as st
+import pandas as pd
+
+# باقي الكود الخاص بك يليهما...
+st.set_page_config(page_title="نظام إدارة الجمعية القرآنية", layout="wide")import streamlit as str
 from streamlit_gsheets import GSheetsConnection
 
 try:
