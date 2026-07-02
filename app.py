@@ -62,10 +62,31 @@ st.markdown("""
     }
     
     h2, h3, h4 {
-        color: #2ECC71 !important;
         font-size: 24px !important;
-        text-decoration: underline !important;
         text-align: right !important;
+    }
+    
+    /* 🎨 تنسيقات مخصصة وعريضة لعناوين المراحل التعليمية */
+    .stage-title-1 {
+        color: #3498DB !important; /* أزرق فخم */
+        font-size: 26px !important;
+        font-weight: bold !important;
+        text-decoration: underline !important;
+        margin-top: 10px;
+    }
+    .stage-title-2 {
+        color: #E67E22 !important; /* برتقالي دافئ */
+        font-size: 26px !important;
+        font-weight: bold !important;
+        text-decoration: underline !important;
+        margin-top: 10px;
+    }
+    .stage-title-3 {
+        color: #9B5DE5 !important; /* بنفسجي ملكي */
+        font-size: 26px !important;
+        font-weight: bold !important;
+        text-decoration: underline !important;
+        margin-top: 10px;
     }
     
     /* تجميل شكل التبويبات لعرض المراحل التعليمية */
@@ -105,11 +126,11 @@ stages_structure = {
     "المرحلة الثالثة: القراءات": ["الوحدة الأولى (وحدة سما)", "الوحدة الثانية (الأربعة المتممة)", "الوحدة الثالثة (الثلاثة المتممة)", "الوحدة الرابعة (العشر الكبرى)"]
 }
 
-menu = ["تسجيل طالب جديد وإدارة المراحل", "رصد وتعديل الدرجات", "إعدادات الضوارب (المعاملات)", "استخراج بطاقة الأعداد"]
+menu = ["تسجيل طالب جديد وتوزيعه", "إدارة وحذف الطلاب", "رصد وتعديل الدرجات", "إعدادات الضوارب (المعاملات)", "استخراج بطاقة الأعداد"]
 choice = st.sidebar.selectbox("قائمة التحكم والتنقل :", menu)
 
 # --- تسجيل طالب جديد وإدارة التبويبات والمراحل ---
-if choice == "تسجيل طالب جديد وإدارة المراحل":
+if choice == "تسجيل طالب جديد وتوزيعه":
     st.markdown('<p class="custom-heading">📝 استمارة بطاقة إرشادات وتسجيل طالب جديد</p>', unsafe_allow_html=True)
     
     with st.form("student_form", clear_on_submit=True):
@@ -123,7 +144,7 @@ if choice == "تسجيل طالب جديد وإدارة المراحل":
             last_name = st.text_input("اللقب (اسم العائلة) :")
             cin = st.text_input("رقم بطاقة التعريف الوطنية / رقم القيد :")
             st.write("") # موازنة بصريّة
-            chosen_unit = st.selectbox("تسكين في الوحدة البدائية :", stages_structure[chosen_stage] if name or True else [])
+            chosen_unit = st.selectbox("تسكين في الوحدة البدائية :", stages_structure[chosen_stage])
             
         submitted = st.form_submit_button("حفظ بيانات الطالب وتوليد المعرف")
         
@@ -152,7 +173,8 @@ if choice == "تسجيل طالب جديد وإدارة المراحل":
     
     # محتويات تبويب المرحلة الأولى
     with tab1:
-        st.info("📜 تشمل هذه المرحلة ركيزة الرواية وبها 4 وحدات دراسية للارتقاء.")
+        st.markdown('<p class="stage-title-1">📜 المرحلة الأولى: رواية الإمام قالون</p>', unsafe_allow_html=True)
+        st.info("تشمل هذه المرحلة ركيزة الرواية وبها 4 وحدات دراسية للارتقاء.")
         for unit in stages_structure["المرحلة الأولى: رواية الإمام قالون"]:
             filtered_df = st.session_state.students_db[
                 (st.session_state.students_db['المرحلة الحالية'] == "المرحلة الأولى: رواية الإمام قالون") & 
@@ -161,12 +183,21 @@ if choice == "تسجيل طالب جديد وإدارة المراحل":
             st.markdown(f"🔹 **{unit}** (عدد الطلاب الحركيين حالياً: {len(filtered_df)})")
             if not filtered_df.empty:
                 st.dataframe(filtered_df[['المعرف', 'الاسم الثلاثي', 'اللقب', 'المهنة', 'بطاقة التعريف']], use_container_width=True)
+                # إضافة خيار حذف سريع وتجريبي للطلاب في التبويب مباشرة
+                with st.expander(f"🗑️ خيارات حذف سريعة لـ {unit}"):
+                    del_id = st.selectbox("اختر معرف الطالب لحذفه فوراً:", filtered_df['المعرف'], key=f"del_{unit}")
+                    if st.button("تأكيد الحذف السريع للطالب", key=f"btn_del_{unit}", type="primary"):
+                        st.session_state.students_db = st.session_state.students_db[st.session_state.students_db['المعرف'] != del_id].reset_index(drop=True)
+                        st.session_state.grades_db = st.session_state.grades_db[st.session_state.grades_db['المعرف'] != del_id].reset_index(drop=True)
+                        st.success("🗑️ تم الحذف بنجاح!")
+                        st.rerun()
             else:
                 st.caption("لا يوجد طلاب مسجلون في هذه الوحدة حالياً.")
                 
     # محتويات تبويب المرحلة الثانية
     with tab2:
-        st.info("📖 تشمل قراءة الإمام نافع برافديه (قالون وورش) إضافةً إلى رواية حفص وبها 3 وحدات.")
+        st.markdown('<p class="stage-title-2">📖 المرحلة الثانية: قراءة نافع وحفص عن عاصم</p>', unsafe_allow_html=True)
+        st.info("تشمل قراءة الإمام نافع برافديه (قالون وورش) إضافةً إلى رواية حفص وبها 3 وحدات.")
         for unit in stages_structure["المرحلة الثانية: قراءة نافع وحفص عن عاصم"]:
             filtered_df = st.session_state.students_db[
                 (st.session_state.students_db['المرحلة الحالية'] == "المرحلة الثانية: قراءة نافع وحفص عن عاصم") & 
@@ -175,12 +206,20 @@ if choice == "تسجيل طالب جديد وإدارة المراحل":
             st.markdown(f"🔹 **{unit}** (عدد الطلاب الحركيين حالياً: {len(filtered_df)})")
             if not filtered_df.empty:
                 st.dataframe(filtered_df[['المعرف', 'الاسم الثلاثي', 'اللقب', 'المهنة', 'بطاقة التعريف']], use_container_width=True)
+                with st.expander(f"🗑️ خيارات حذف سريعة لـ {unit}"):
+                    del_id = st.selectbox("اختر معرف الطالب لحذفه فوراً:", filtered_df['المعرف'], key=f"del_{unit}")
+                    if st.button("تأكيد الحذف السريع للطالب", key=f"btn_del_{unit}", type="primary"):
+                        st.session_state.students_db = st.session_state.students_db[st.session_state.students_db['المعرف'] != del_id].reset_index(drop=True)
+                        st.session_state.grades_db = st.session_state.grades_db[st.session_state.grades_db['المعرف'] != del_id].reset_index(drop=True)
+                        st.success("🗑️ تم الحذف بنجاح!")
+                        st.rerun()
             else:
                 st.caption("لا يوجد طلاب مسجلون في هذه الوحدة حالياً.")
 
     # محتويات تبويب المرحلة الثالثة
     with tab3:
-        st.info("🕌 مرحلة علم القراءات المتقدمة والأسانيد وبها 4 وحدات كبرى.")
+        st.markdown('<p class="stage-title-3">🕌 المرحلة الثالثة: علم القراءات المتقدمة</p>', unsafe_allow_html=True)
+        st.info("مرحلة علم القراءات المتقدمة والأسانيد وبها 4 وحدات كبرى.")
         for unit in stages_structure["المرحلة الثالثة: القراءات"]:
             filtered_df = st.session_state.students_db[
                 (st.session_state.students_db['المرحلة الحالية'] == "المرحلة الثالثة: القراءات") & 
@@ -189,8 +228,51 @@ if choice == "تسجيل طالب جديد وإدارة المراحل":
             st.markdown(f"🔹 **{unit}** (عدد الطلاب الحركيين حالياً: {len(filtered_df)})")
             if not filtered_df.empty:
                 st.dataframe(filtered_df[['المعرف', 'الاسم الثلاثي', 'اللقب', 'المهنة', 'بطاقة التعريف']], use_container_width=True)
+                with st.expander(f"🗑️ خيارات حذف سريعة لـ {unit}"):
+                    del_id = st.selectbox("اختر معرف الطالب لحذفه فوراً:", filtered_df['المعرف'], key=f"del_{unit}")
+                    if st.button("تأكيد الحذف السريع للطالب", key=f"btn_del_{unit}", type="primary"):
+                        st.session_state.students_db = st.session_state.students_db[st.session_state.students_db['المعرف'] != del_id].reset_index(drop=True)
+                        st.session_state.grades_db = st.session_state.grades_db[st.session_state.grades_db['المعرف'] != del_id].reset_index(drop=True)
+                        st.success("🗑️ تم الحذف بنجاح!")
+                        st.rerun()
             else:
                 st.caption("لا يوجد طلاب مسجلون في هذه الوحدة حالياً.")
+
+# --- قسم إدارة وحذف الطلاب الرئيسي ---
+elif choice == "إدارة وحذف الطلاب":
+    st.markdown('<p class="custom-heading">⚙️ لوحة التحكم في مسار الطلاب وإجراء الحذف</p>', unsafe_allow_html=True)
+    if st.session_state.students_db.empty:
+        st.warning("⚠️ لا توجد بيانات طلاب مسجلة حالياً لتعديلها أو حذفها.")
+    else:
+        student_id = st.selectbox("اختر معرف الطالب المراد إدارته:", st.session_state.students_db['المعرف'])
+        s_idx = st.session_state.students_db[st.session_state.students_db['المعرف'] == student_id].index[0]
+        s_info = st.session_state.students_db.loc[s_idx]
+        
+        st.write("---")
+        st.markdown(f"### 👤 الطالب الحالي: {s_info['الاسم الثلاثي']} {s_info['اللقب']}")
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            mod_stage = st.selectbox("تعديل المرحلة الحالية:", list(stages_structure.keys()), index=list(stages_structure.keys()).index(s_info['المرحلة الحالية']))
+        with col2:
+            available_units = stages_structure[mod_stage]
+            default_unit_idx = available_units.index(s_info['الوحدة الحالية']) if s_info['الوحدة الحالية'] in available_units else 0
+            mod_unit = st.selectbox("تعديل الوحدة الحالية:", available_units, index=default_unit_idx)
+            
+        col_btn1, col_btn2 = st.columns(2)
+        with col_btn1:
+            if st.button("💾 حفظ التعديلات على المرحلة والوحدة", use_container_width=True):
+                st.session_state.students_db.at[s_idx, 'المرحلة الحالية'] = mod_stage
+                st.session_state.students_db.at[s_idx, 'الوحدة الحالية'] = mod_unit
+                st.success("✅ تم تحديث مسار الطالب بنجاح!")
+                st.rerun()
+                
+        with col_btn2:
+            if st.button("❌ حذف هذا الطالب نهائياً من النظام", use_container_width=True, type="primary"):
+                st.session_state.students_db = st.session_state.students_db.drop(s_idx).reset_index(drop=True)
+                st.session_state.grades_db = st.session_state.grades_db[st.session_state.grades_db['المعرف'] != student_id].reset_index(drop=True)
+                st.success("🗑️ تم حذف الطالب وكافة سجلاته بنجاح!")
+                st.rerun()
 
 # --- رصد الأعداد والدرجات ---
 elif choice == "رصد وتعديل الدرجات":
@@ -241,7 +323,6 @@ elif choice == "استخراج بطاقة الأعداد":
         sum_weights = sum(w.values())
         final_score = round(total_points / sum_weights, 2)
         
-        # صياغة الملاحظات بدقة تامة طبقاً للشروط الموضوعة
         if final_score >= 10.0:
             result = "ناجح ومرتقى للوحدة الموالية بموجب تفوقه 🎓"
             result_color = "#27AE60"
