@@ -343,4 +343,4 @@ elif choice == "استخراج بطاقة الأعداد":
                 <p>المعدل العام: {final_score} / 20</p>
             </div>
         </div>
-        """, unsafe_allow_html=True) """, unsafe_allow_html=True)
+        """, unsafe_allow_html=True) 
