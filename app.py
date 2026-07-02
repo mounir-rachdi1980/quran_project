@@ -4,19 +4,21 @@ import pandas as pd
 # 1. إعدادات واجهة التطبيق
 st.set_page_config(page_title="نظام الفرع المحلي للرابطة الوطنية للقرآن الكريم بالمكناسي", layout="wide", page_icon="🕌")
 
-# 2. إضافة تنسيق متطور للألوان والاتجاه والترتيب (RTL ووسطي)
+# 2. إضافة تنسيق متطور لتوسيط كافة العناصر وتلوينها
 st.markdown("""
     <style>
-    /* تنسيق المحتوى الرئيسي والقوائم الجانبية ليصبح عربياً بالكامل */
+    /* توسيط المحتوى الرئيسي بالكامل وضبط اتجاه لغة الضاد */
     [data-testid="stSidebar"], .main .block-container, div[data-testid="stForm"], .stDataFrame {
         direction: rtl !important;
         text-align: right !important;
     }
-    /* محاذاة النصوص والبطاقات */
+    
+    /* محاذاة الاستمارة والنصوص لتكون متناسقة ومتمركزة */
     .stMarkdown, p, label {
         text-align: right !important;
     }
-    /* محاذاة الترويسة في المنتصف تماماً */
+    
+    /* حاوية مخصصة لتوسيط الترويسة (الشعار والعنوان) في المنتصف تماماً */
     .centered-header {
         text-align: center !important;
         direction: rtl !important;
@@ -25,28 +27,37 @@ st.markdown("""
         align-items: center;
         justify-content: center;
     }
-    /* ضبط اتجاه حقول الإدخال */
+    
+    /* توسيط الاستمارة (Form) في منتصف الصفحة */
+    div[data-testid="stForm"] {
+        margin: 0 auto !important;
+        max-width: 900px !important; /* حجم متناسق للاستمارة في وسط الورقة */
+    }
+    
+    /* ضبط اتجاه وحقول الإدخال */
     input, select, textarea {
         direction: rtl !important;
         text-align: right !important;
     }
+    
     /* تعديل تنسيق الأعمدة المرنة لتظهر من اليمين لليسار */
     div[data-testid="stHorizontalBlock"] {
         direction: rtl !important;
     }
     
-    /* 🎨 ألوان مخصصة وزاهية للعناوين والكتابة 🎨 */
+    /* 🎨 الألوان الزاهية الجديدة المخصصة بناءً على طلبك 🎨 */
     h1 { 
-        color: #1B4F72 !important; /* أزرق داكن فاخر ورصين للعنوان الرئيسي */
+        color: #E74C3C !important; /* 🔴 اللون الأحمر الفاتح والزاهي للعنوان الرئيسي */
         text-align: center !important;
+        font-family: 'Cairo', sans-serif;
     } 
-    h2 { color: #1E8449 !important; } /* أخضر زاهي ومريح لعناوين الأقسام الرئيسية */
-    h3 { color: #2E86C1 !important; } /* أزرق مشرق وجذاب للقوائم والبيانات */
-    h4 { color: #D35400 !important; } /* برتقالي دافئ مميز للعبارات التوضيحية الفرعية */
+    h2 { color: #27AE60 !important; } /* أخضر زاهي لعناوين الأقسام */
+    h3 { color: #2980B9 !important; } /* أزرق مشرق للقوائم والبيانات */
+    h4 { color: #E67E22 !important; } /* برتقالي فاتح للعبارات التوضيحية */
     </style>
 """, unsafe_allow_html=True)
 
-# 3. ترويسة الصفحة: الشعار في الأعلى وتحته العنوان مباشرة (كلاهما في منتصف الصفحة)
+# 3. ترويسة الصفحة: الشعار في الأعلى وتحته العنوان مباشرة (كلاهما في منتصف الصفحة تماماً)
 st.markdown('<div class="centered-header">', unsafe_allow_html=True)
 
 # عرض الشعار في الوسط والأعلى
@@ -58,7 +69,7 @@ except:
     except:
         st.write("🕌")
 
-# عرض العنوان الرئيسي في الوسط (بدون رمز المسجد على اليمين بناءً على طلبك)
+# عرض العنوان الرئيسي في الوسط بالأحمر الفاتح وبدون رموز
 st.markdown("<h1 style='margin-top: 15px; margin-bottom: 25px;'>نظام الفرع المحلي للرابطة الوطنية للقرآن الكريم بالمكناسي</h1>", unsafe_allow_html=True)
 
 st.markdown('</div>', unsafe_allow_html=True) # إغلاق حاوية الترويسة الوسطية
@@ -93,7 +104,7 @@ if choice == "إعدادات الضوارب (المعاملات)":
 
 # --- تسجيل طالب جديد ---
 elif choice == "تسجيل طالب جديد":
-    st.subheader("📝 استمارة بطاقة إرشادات طالب جديد")
+    st.markdown("<h2 style='text-align: center !important;'>📝 استمارة بطاقة إرشادات طالب جديد</h2>", unsafe_allow_html=True)
     with st.form("student_form", clear_on_submit=True):
         col1, col2 = st.columns(2)
         with col1:
@@ -160,14 +171,14 @@ elif choice == "استخراج بطاقة الأعداد":
         final_score = round(total_points / sum_weights, 2)
         
         result = "ناجح ومبارك له 🎉" if final_score >= 10.0 else "راسب وله فرصة تدارك 📑"
-        result_color = "#1E8449" if final_score >= 10.0 else "#8B0000"
+        result_color = "#27AE60" if final_score >= 10.0 else "#8B0000"
         
         st.markdown(f"""
-        <div style="border: 3px double #1B4F72; padding: 25px; border-radius: 10px; background-color: #FAFAFA; direction: rtl; font-family: 'Cairo', sans-serif; text-align: right;">
+        <div style="border: 3px double #E74C3C; padding: 25px; border-radius: 10px; background-color: #FAFAFA; direction: rtl; font-family: 'Cairo', sans-serif; text-align: right; margin: 0 auto; max-width: 900px;">
             <div style="text-align: center;">
-                <h2 style="margin: 0; color: #1B4F72;">بطاقة تقييم وكشف أعداد طالب سنوي</h2>
+                <h2 style="margin: 0; color: #E74C3C;">بطاقة تقييم وكشف أعداد طالب سنوي</h2>
                 <h4 style="color: gray; margin-top: 5px;">الفرع المحلي للرابطة الوطنية للقرآن الكريم بالمكناسي</h4>
-                <hr style="border-top: 2px solid #1B4F72; margin: 15px 0;">
+                <hr style="border-top: 2px solid #E74C3C; margin: 15px 0;">
             </div>
             <table style="width: 100%; font-size: 18px; margin-bottom: 20px; text-align: right; direction: rtl; border: none; color: #333;">
                 <tr><td style="padding: 5px; border:none;"><b>المعرف الخاص:</b> {s_info['المعرف']}</td><td style="padding: 5px; border:none;"><b>الاسم الكامل:</b> {s_info['الاسم الثلاثي']} {s_info['اللقب']}</td></tr>
@@ -175,7 +186,7 @@ elif choice == "استخراج بطاقة الأعداد":
                 <tr><td style="padding: 5px; border:none;"><b>بطاقة التعريف الوطنية:</b> {s_info['بطاقة التعريف']}</td><td style="padding: 5px; border:none;"></td></tr>
             </table>
             <table style="width: 100%; border-collapse: collapse; text-align: center; font-size: 18px; direction: rtl;">
-                <tr style="background-color: #1B4F72; color: white;">
+                <tr style="background-color: #E74C3C; color: white;">
                     <th style="padding: 10px; border: 1px solid black; text-align: center !important;">المادة التقييمية</th>
                     <th style="padding: 10px; border: 1px solid black; text-align: center !important;">العدد المرصود (من 20)</th>
                     <th style="padding: 10px; border: 1px solid black; text-align: center !important;">ضارب المادة</th>
@@ -185,7 +196,7 @@ elif choice == "استخراج بطاقة الأعداد":
                 <tr><td style="padding: 10px; border: 1px solid black; text-align: right;">مادة الدراية والتفسير</td><td style="border: 1px solid black; padding: 10px;">{g_info['الدراية']}</td><td style="border: 1px solid black; padding: 10px;">{w['الدراية']}</td></tr>
                 <tr><td style="padding: 10px; border: 1px solid black; text-align: right;">مادة الحضور والمواظبة</td><td style="border: 1px solid black; padding: 10px;">{g_info['الحضور']}</td><td style="border: 1px solid black; padding: 10px;">{w['الحضور']}</td></tr>
             </table>
-            <div style="margin-top: 20px; font-size: 20px; font-weight: bold; color: #1B4F72;">
+            <div style="margin-top: 20px; font-size: 20px; font-weight: bold; color: #E74C3C;">
                 <p>المعدل العام الإجمالي الحاصل عليه: {final_score} / 20</p>
                 <p>النتيجة والقرار النهائي للجنة الإدارية: <span style="color: {result_color};">{result}</span></p>
             </div>
