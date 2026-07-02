@@ -32,10 +32,6 @@ st.markdown("""
 col_logo, col_title = st.columns([1, 5])
 
 with col_logo:
-    # تم ربط الصورة برابط مباشر لتعمل في كل الأحوال ومباشرة دون مشاكل مسارات
-    try:
-       with col_logo:
-    # محاولة قراءة الشعار المحلي من المستودع
     try:
         st.image("logo.jpg", width=120)
     except:
