@@ -21,7 +21,10 @@ st.markdown("""
         text-align: right !important;
     }
     
-    /* توسيط الاستمارة */
+    /* توسيط الاستمارة والتبويبات */
+    div[data-testid="stForm"], div[data-testid="stTab"] {
+        direction: rtl !important;
+    }
     div[data-testid="stForm"] {
         margin: 0 auto !important;
         max-width: 900px !important; 
@@ -36,7 +39,7 @@ st.markdown("""
         direction: rtl !important;
     }
     
-    /* 🔴 اسم الفرع الرئيسي: أحمر فاتح ومسطر */
+    /* 🔴 اسم الفرع الرئيسي */
     .main-title { 
         color: #FF4D4D !important; 
         text-align: center !important;
@@ -46,7 +49,7 @@ st.markdown("""
         text-decoration: underline !important;
     } 
     
-    /* 🟢 عناوين الاستمارات والقوائم الموحدة: نفس الحجم (24px)، لون أخضر فاتح، ومسطرة */
+    /* 🟢 عناوين الاستمارات والقوائم الموحدة */
     .custom-heading { 
         color: #2ECC71 !important; 
         text-align: center !important;
@@ -64,10 +67,16 @@ st.markdown("""
         text-decoration: underline !important;
         text-align: right !important;
     }
+    
+    /* تجميل شكل التبويبات لعرض المراحل التعليمية */
+    button[data-testid="stMarkdownContainer"] p {
+        font-size: 18px !important;
+        font-weight: bold !important;
+    }
     </style>
 """, unsafe_allow_html=True)
 
-# 3. الترويسة: إضافة هوامش (margin) علوية وسفلية للشعار لإبرازه مع الحفاظ على أبعاده المتناسقة
+# 3. الترويسة والشعار المتناسق
 st.markdown("""
     <div style="text-align: center; width: 100%;">
         <img src="https://raw.githubusercontent.com/mounir-rachdi1980/quran_project/main/logo.jpg" 
@@ -77,9 +86,11 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-# --- محاكاة قاعدة البيانات وجلسة العمل ---
+# --- محاكاة قاعدة البيانات وجلسة العمل وتحديث الأعمدة للمراحل والوحدات ---
 if 'students_db' not in st.session_state:
-    st.session_state.students_db = pd.DataFrame(columns=['المعرف', 'الاسم الثلاثي', 'اللقب', 'تاريخ الولادة', 'بطاقة التعريف', 'المهنة'])
+    st.session_state.students_db = pd.DataFrame(columns=[
+        'المعرف', 'الاسم الثلاثي', 'اللقب', 'تاريخ الولادة', 'بطاقة التعريف', 'المهنة', 'المرحلة الحالية', 'الوحدة الحالية'
+    ])
 if 'grades_db' not in st.session_state:
     st.session_state.grades_db = pd.DataFrame(columns=['المعرف', 'الحفظ', 'الرواية', 'الدراية', 'الحضور'])
 if 'weights' not in st.session_state:
@@ -87,40 +98,99 @@ if 'weights' not in st.session_state:
 
 w = st.session_state.weights
 
-menu = ["تسجيل طالب جديد", "رصد وتعديل الدرجات", "إعدادات الضوارب (المعاملات)", "استخراج بطاقة الأعداد"]
+# تعريف الهيكل التعليمي المتكامل للمنظومة
+stages_structure = {
+    "المرحلة الأولى: رواية الإمام قالون": ["الوحدة الأولى", "الوحدة الثانية", "الوحدة الثالثة", "الوحدة الرابعة"],
+    "المرحلة الثانية: قراءة نافع وحفص عن عاصم": ["الوحدة الأولى", "الوحدة الثانية", "الوحدة الثالثة"],
+    "المرحلة الثالثة: القراءات": ["الوحدة الأولى (وحدة سما)", "الوحدة الثانية (الأربعة المتممة)", "الوحدة الثالثة (الثلاثة المتممة)", "الوحدة الرابعة (العشر الكبرى)"]
+}
+
+menu = ["تسجيل طالب جديد وإدارة المراحل", "رصد وتعديل الدرجات", "إعدادات الضوارب (المعاملات)", "استخراج بطاقة الأعداد"]
 choice = st.sidebar.selectbox("قائمة التحكم والتنقل :", menu)
 
-# --- تسجيل طالب جديد ---
-if choice == "تسجيل طالب جديد":
-    st.markdown('<p class="custom-heading">📝 استمارة بطاقة إرشادات طالب جديد</p>', unsafe_allow_html=True)
+# --- تسجيل طالب جديد وإدارة التبويبات والمراحل ---
+if choice == "تسجيل طالب جديد وإدارة المراحل":
+    st.markdown('<p class="custom-heading">📝 استمارة بطاقة إرشادات وتسجيل طالب جديد</p>', unsafe_allow_html=True)
+    
     with st.form("student_form", clear_on_submit=True):
         col1, col2 = st.columns(2)
         with col1:
             name = st.text_input("الاسم الثلاثي :")
             dob = st.date_input("تاريخ الولادة :")
             job = st.text_input("المهنة / المستوى الدراسي :")
+            chosen_stage = st.selectbox("تسكين في المرحلة التعليمية :", list(stages_structure.keys()))
         with col2:
             last_name = st.text_input("اللقب (اسم العائلة) :")
             cin = st.text_input("رقم بطاقة التعريف الوطنية / رقم القيد :")
+            st.write("") # موازنة بصريّة
+            chosen_unit = st.selectbox("تسكين في الوحدة البدائية :", stages_structure[chosen_stage] if name or True else [])
             
         submitted = st.form_submit_button("حفظ بيانات الطالب وتوليد المعرف")
         
         if submitted:
             if name and last_name and cin:
                 next_id = 20260001 + len(st.session_state.students_db)
-                new_student = pd.DataFrame([{'المعرف': next_id, 'الاسم الثلاثي': name, 'اللقب': last_name, 'تاريخ الولادة': str(dob), 'بطاقة التعريف': cin, 'المهنة': job}])
+                new_student = pd.DataFrame([{
+                    'المعرف': next_id, 'الاسم الثلاثي': name, 'اللقب': last_name, 
+                    'تاريخ الولادة': str(dob), 'بطاقة التعريف': cin, 'المهنة': job,
+                    'المرحلة الحالية': chosen_stage, 'الوحدة الحالية': chosen_unit
+                }])
                 st.session_state.students_db = pd.concat([st.session_state.students_db, new_student], ignore_index=True)
                 
                 new_grade = pd.DataFrame([{'المعرف': next_id, 'الحفظ': 0.0, 'الرواية': 0.0, 'الدراية': 0.0, 'الحضور': 0.0}])
                 st.session_state.grades_db = pd.concat([st.session_state.grades_db, new_grade], ignore_index=True)
                 
-                st.success(f"🎉 تم تسجيل الطالب بنجاح! المعرف الرقمي الخاص به هو : {next_id}")
+                st.success(f"🎉 تم تسجيل الطالب بنجاح وتسكينه في {chosen_unit}! المعرف الرقمي: {next_id}")
                 st.rerun()
             else:
                 st.error("⚠️ يرجى ملء الخانات الأساسية المطلوبة.")
 
-    st.markdown('<p class="custom-heading" style="text-align: right !important;">👥 قائمة الطلاب المسجلين حالياً :</p>', unsafe_allow_html=True)
-    st.dataframe(st.session_state.students_db, use_container_width=True)
+    # 🏢 التبويب الجمالي لعرض وتوزيع الطلبة حسب المراحل والوحدات التعليمية
+    st.markdown('<p class="custom-heading">🏢 التوزيع الهيكلي للطلاب حسب المراحل والوحدات التعليمية</p>', unsafe_allow_html=True)
+    
+    tab1, tab2, tab3 = st.tabs(list(stages_structure.keys()))
+    
+    # محتويات تبويب المرحلة الأولى
+    with tab1:
+        st.info("📜 تشمل هذه المرحلة ركيزة الرواية وبها 4 وحدات دراسية للارتقاء.")
+        for unit in stages_structure["المرحلة الأولى: رواية الإمام قالون"]:
+            filtered_df = st.session_state.students_db[
+                (st.session_state.students_db['المرحلة الحالية'] == "المرحلة الأولى: رواية الإمام قالون") & 
+                (st.session_state.students_db['الوحدة الحالية'] == unit)
+            ]
+            st.markdown(f"🔹 **{unit}** (عدد الطلاب الحركيين حالياً: {len(filtered_df)})")
+            if not filtered_df.empty:
+                st.dataframe(filtered_df[['المعرف', 'الاسم الثلاثي', 'اللقب', 'المهنة', 'بطاقة التعريف']], use_container_width=True)
+            else:
+                st.caption("لا يوجد طلاب مسجلون في هذه الوحدة حالياً.")
+                
+    # محتويات تبويب المرحلة الثانية
+    with tab2:
+        st.info("📖 تشمل قراءة الإمام نافع برافديه (قالون وورش) إضافةً إلى رواية حفص وبها 3 وحدات.")
+        for unit in stages_structure["المرحلة الثانية: قراءة نافع وحفص عن عاصم"]:
+            filtered_df = st.session_state.students_db[
+                (st.session_state.students_db['المرحلة الحالية'] == "المرحلة الثانية: قراءة نافع وحفص عن عاصم") & 
+                (st.session_state.students_db['الوحدة الحالية'] == unit)
+            ]
+            st.markdown(f"🔹 **{unit}** (عدد الطلاب الحركيين حالياً: {len(filtered_df)})")
+            if not filtered_df.empty:
+                st.dataframe(filtered_df[['المعرف', 'الاسم الثلاثي', 'اللقب', 'المهنة', 'بطاقة التعريف']], use_container_width=True)
+            else:
+                st.caption("لا يوجد طلاب مسجلون في هذه الوحدة حالياً.")
+
+    # محتويات تبويب المرحلة الثالثة
+    with tab3:
+        st.info("🕌 مرحلة علم القراءات المتقدمة والأسانيد وبها 4 وحدات كبرى.")
+        for unit in stages_structure["المرحلة الثالثة: القراءات"]:
+            filtered_df = st.session_state.students_db[
+                (st.session_state.students_db['المرحلة الحالية'] == "المرحلة الثالثة: القراءات") & 
+                (st.session_state.students_db['الوحدة الحالية'] == unit)
+            ]
+            st.markdown(f"🔹 **{unit}** (عدد الطلاب الحركيين حالياً: {len(filtered_df)})")
+            if not filtered_df.empty:
+                st.dataframe(filtered_df[['المعرف', 'الاسم الثلاثي', 'اللقب', 'المهنة', 'بطاقة التعريف']], use_container_width=True)
+            else:
+                st.caption("لا يوجد طلاب مسجلون في هذه الوحدة حالياً.")
 
 # --- رصد الأعداد والدرجات ---
 elif choice == "رصد وتعديل الدرجات":
@@ -128,11 +198,11 @@ elif choice == "رصد وتعديل الدرجات":
     if st.session_state.students_db.empty:
         st.warning("⚠️ لا يوجد طلاب مسجلون حالياً في النظام لرصد أعدادهم.")
     else:
-        merged_df = pd.merge(st.session_state.students_db[['المعرف', 'الاسم الثلاثي', 'اللقب']], st.session_state.grades_db, on='المعرف')
+        merged_df = pd.merge(st.session_state.students_db, st.session_state.grades_db, on='المعرف')
         student_id = st.selectbox("اختر معرف الطالب المراد رصد درجاته :", merged_df['المعرف'])
         
         current_student = merged_df[merged_df['المعرف'] == student_id].iloc[0]
-        st.markdown(f"<h4>📝 رصد ودرجات الطالب الحالي : {current_student['الاسم الثلاثي']} {current_student['اللقب']}</h4>", unsafe_allow_html=True)
+        st.markdown(f"<h4>📝 رصد ودرجات الطالب: {current_student['الاسم الثلاثي']} {current_student['اللقب']} | الحيز: {current_student['المرحلة الحالية']} - {current_student['الوحدة الحالية']}</h4>", unsafe_allow_html=True)
         
         col1, col2, col3, col4 = st.columns(4)
         with col1: hifz = st.number_input("مادة الحفظ (من 20) :", min_value=0.0, max_value=20.0, value=float(current_student['الحفظ']))
@@ -171,9 +241,14 @@ elif choice == "استخراج بطاقة الأعداد":
         sum_weights = sum(w.values())
         final_score = round(total_points / sum_weights, 2)
         
-        result = "ناجح ومبارك له 🎉" if final_score >= 10.0 else "راسب وله فرصة تدارك 📑"
-        result_color = "#27AE60" if final_score >= 10.0 else "#8B0000"
-        
+        # صياغة الملاحظات بدقة تامة طبقاً للشروط الموضوعة
+        if final_score >= 10.0:
+            result = "ناجح ومرتقى للوحدة الموالية بموجب تفوقه 🎓"
+            result_color = "#27AE60"
+        else:
+            result = "راسب وله فرصة تدارك في نفس الوحدة الحالية 📑"
+            result_color = "#8B0000"
+            
         st.markdown(f"""
         <div style="border: 3px double #FF4D4D; padding: 25px; border-radius: 10px; background-color: #FAFAFA; direction: rtl; font-family: 'Cairo', sans-serif; text-align: right; margin: 0 auto; max-width: 900px;">
             <div style="text-align: center;">
@@ -183,8 +258,8 @@ elif choice == "استخراج بطاقة الأعداد":
             </div>
             <table style="width: 100%; font-size: 18px; margin-bottom: 20px; text-align: right; direction: rtl; border: none; color: #333;">
                 <tr><td style="padding: 5px; border:none;"><b>المعرف الخاص :</b> {s_info['المعرف']}</td><td style="padding: 5px; border:none;"><b>الاسم الكامل :</b> {s_info['الاسم الثلاثي']} {s_info['اللقب']}</td></tr>
-                <tr><td style="padding: 5px; border:none;"><b>المهنة / الصفة :</b> {s_info['المهنة']}</td><td style="padding: 5px; border:none;"><b>تاريخ الولادة :</b> {s_info['تاريخ الولادة']}</td></tr>
-                <tr><td style="padding: 5px; border:none;"><b>بطاقة التعريف الوطنية :</b> {s_info['بطاقة التعريف']}</td><td style="padding: 5px; border:none;"></td></tr>
+                <tr><td style="padding: 5px; border:none;"><b>المرحلة الدراسية :</b> {s_info['المرحلة الحالية']}</td><td style="padding: 5px; border:none;"><b>الوحدة التقييمية :</b> {s_info['الوحدة الحالية']}</td></tr>
+                <tr><td style="padding: 5px; border:none;"><b>بطاقة التعريف الوطنية :</b> {s_info['بطاقة التعريف']}</td><td style="padding: 5px; border:none;"><b>المهنة / الصفة :</b> {s_info['المهنة']}</td></tr>
             </table>
             <table style="width: 100%; border-collapse: collapse; text-align: center; font-size: 18px; direction: rtl;">
                 <tr style="background-color: #FF4D4D; color: white;">
