@@ -301,10 +301,7 @@ elif choice == "إعدادات الضوارب (المعاملات)":
     if st.button("حفظ الضوارب الجديدة"):
         st.session_state.weights = {'الحفظ': w_hifz, 'الرواية': w_riwaya, 'الدراية': w_diraya, 'الحضور': w_hodoor}
         st.success("✅ تم تحديث ضوارب المواد بنجاح!")
-
-x; text-align: center; font-size: 20px; font-weight: bold; color: #2C3E50;">
-                <p>المعدل العام: {final_score
-                                  # --- استخراج بطاقة الأعداد ---
+# --- استخراج بطاقة الأعداد ---
 elif choice == "استخراج بطاقة الأعداد":
     st.markdown('<p class="custom-heading">🖨️ استخراج وطباعة كشف الأعداد السنوي</p>', unsafe_allow_html=True)
     if st.session_state.students_db.empty:
@@ -346,4 +343,4 @@ elif choice == "استخراج بطاقة الأعداد":
                 <p>المعدل العام: {final_score} / 20</p>
             </div>
         </div>
-        """, unsafe_allow_html=True)
+        """, unsafe_allow_html=True) """, unsafe_allow_html=True)
