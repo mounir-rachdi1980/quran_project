@@ -28,7 +28,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# ترويسة الصفحة: عرض الشعار والعنوان بجانب بعضهما بشكل متناسق باستخدام رابط خارجي للصورة
+# ترويسة الصفحة: عرض الشعار والعنوان بجانب بعضهما بشكل متناسق
 col_logo, col_title = st.columns([1, 5])
 
 with col_logo:
@@ -39,6 +39,9 @@ with col_logo:
             st.image("logo.png", width=120)
         except:
             st.write("🕌")
+
+with col_title:
+    st.markdown("<h1 style='color: #1E4620; margin-top: 15px;'>🕌 نظام الفرع المحلي للرابطة الوطنية للقرآن الكريم بالمكناسي</h1>", unsafe_allow_html=True)
 
 # محاكاة قاعدة البيانات والاتصال المبدئي المستقر داخل جلسة العمل
 if 'students_db' not in st.session_state:
