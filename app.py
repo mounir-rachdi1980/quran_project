@@ -296,7 +296,7 @@ elif choice == "إعدادات الضوارب (المعاملات)":
     with col1: w_hifz = st.number_input("ضارب مادة الحفظ :", min_value=1.0, value=w['الحفظ'])
     with col2: w_riwaya = st.number_input("ضارب مادة الرواية :", min_value=1.0, value=w['الرواية'])
     with col3: w_diraya = st.number_input("ضارب مادة الدراية :", min_value=1.0, value=w['الدراية'])
-    with col4: w_hodoor = st.number_input("ضارب مادة الحضور :", min_value=1.0, value=w['الحضور'])
+    with col4: w_hodoor = st.number_input("ضارب مادة الحضور :", min_value=0.0, value=w['الحضور'])
     
     if st.button("حفظ الضوارب الجديدة"):
         st.session_state.weights = {'الحفظ': w_hifz, 'الرواية': w_riwaya, 'الدراية': w_diraya, 'الحضور': w_hodoor}
