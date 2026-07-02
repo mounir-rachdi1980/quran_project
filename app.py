@@ -303,44 +303,55 @@ elif choice == "إعدادات الضوارب (المعاملات)":
         st.success("✅ تم تحديث ضوارب المواد بنجاح!")
 # --- استخراج بطاقة الأعداد ---
 elif choice == "استخراج بطاقة الأعداد":
+    from datetime import date
+    today = date.today().strftime("%d / %m / %Y")
+    
     st.markdown('<p class="custom-heading">🖨️ استخراج وطباعة كشف الأعداد السنوي</p>', unsafe_allow_html=True)
+    
     if st.session_state.students_db.empty:
-        st.warning("⚠️ لا توجد بيانات طلاب متوفرة لاستخراج الكشوفات.")
+        st.warning("⚠️ لا توجد بيانات طلاب متوفرة.")
     else:
-        student_id = st.selectbox("اختر معرف الطالب لإنتاج كشفه :", st.session_state.students_db['المعرف'])
+        student_id = st.selectbox("اختر معرف الطالب:", st.session_state.students_db['المعرف'])
         s_info = st.session_state.students_db[st.session_state.students_db['المعرف'] == student_id].iloc[0]
         g_info = st.session_state.grades_db[st.session_state.grades_db['المعرف'] == student_id].iloc[0]
         
-        # حساب المعدل
-        total_points = (g_info['الحفظ'] * w['الحفظ']) + (g_info['الرواية'] * w['الرواية']) + (g_info['الدراية'] * w['الدراية']) + (g_info['الحضور'] * w['الحضور'])
-        sum_weights = sum(w.values())
-        final_score = round(total_points / sum_weights, 2)
+        final_score = round(((g_info['الحفظ']*w['الحفظ']) + (g_info['الرواية']*w['الرواية']) + (g_info['الدراية']*w['الدراية']) + (g_info['الحضور']*w['الحضور'])) / sum(w.values()), 2)
         
-        # التصميم الجديد للبطاقة
         st.markdown(f"""
-        <div style="border: 2px solid #2C3E50; padding: 30px; border-radius: 15px; background-color: #FFFFFF; direction: rtl; text-align: right; margin: 0 auto; max-width: 800px; box-shadow: 5px 5px 15px #ccc;">
-            <div style="text-align: center;">
-                <img src="https://raw.githubusercontent.com/mounir-rachdi1980/quran_project/main/logo.jpg" style="width: 120px; margin-bottom: 10px;">
-                <h2 style="color: #2C3E50; margin: 0;">الرابطة الوطنية للقرآن الكريم بالمكناسي</h2>
-                <h3 style="color: #555; margin-top: 5px;">بطاقة النتائج السنوية</h3>
-            </div>
-            <hr style="border: 1px solid #2C3E50;">
-            <div style="font-size: 18px; line-height: 2;">
-                <p><b>اسم الطالب:</b> {s_info['الاسم الثلاثي']} {s_info['اللقب']}</p>
-                <p><b>المرحلة:</b> {s_info['المرحلة الحالية']} - <b>الوحدة:</b> {s_info['الوحدة الحالية']}</p>
-            </div>
-            <table style="width: 100%; border-collapse: collapse; margin-top: 20px; text-align: center;">
-                <tr style="background-color: #2C3E50; color: white;">
-                    <th style="padding: 10px; border: 1px solid #ddd;">المادة</th>
-                    <th style="padding: 10px; border: 1px solid #ddd;">العدد</th>
+        <div style="border: 3px solid #1A5276; padding: 25px; border-radius: 20px; background-color: #FFFFFF; direction: rtl; text-align: right; margin: 0 auto; max-width: 800px; box-shadow: 0px 0px 10px #ccc;">
+            <!-- الترويسة -->
+            <table style="width: 100%; border: none;">
+                <tr>
+                    <td style="text-align: right;"><b>الجمهورية التونسية</b><br>الرابطة الوطنية للقرآن الكريم بالمكناسي</td>
+                    <td style="text-align: center;"><img src="https://raw.githubusercontent.com/mounir-rachdi1980/quran_project/main/logo.jpg" style="width: 80px;"></td>
+                    <td style="text-align: left;"><b>الحمد لله</b><br>المكناسي في: {today}<br><small>السنة الدراسية: 2025-2026</small></td>
                 </tr>
-                <tr><td style="padding: 10px; border: 1px solid #ddd;">الحفظ</td><td style="padding: 10px; border: 1px solid #ddd;">{g_info['الحفظ']}</td></tr>
-                <tr><td style="padding: 10px; border: 1px solid #ddd;">الرواية</td><td style="padding: 10px; border: 1px solid #ddd;">{g_info['الرواية']}</td></tr>
-                <tr><td style="padding: 10px; border: 1px solid #ddd;">الدراية</td><td style="padding: 10px; border: 1px solid #ddd;">{g_info['الدراية']}</td></tr>
-                <tr><td style="padding: 10px; border: 1px solid #ddd;">الحضور</td><td style="padding: 10px; border: 1px solid #ddd;">{g_info['الحضور']}</td></tr>
             </table>
-            <div style="margin-top: 25px; text-align: center; font-size: 20px; font-weight: bold; color: #2C3E50;">
-                <p>المعدل العام: {final_score} / 20</p>
-            </div>
+            <hr style="border: 1px solid #1A5276;">
+            <!-- بيانات الطالب -->
+            <table style="width: 100%; margin-top: 20px;">
+                <tr>
+                    <td style="text-align: right; width: 50%;">
+                        <p><b>الاسم:</b> {s_info['الاسم الثلاثي']}</p>
+                        <p><b>اللقب:</b> {s_info['اللقب']}</p>
+                        <p><b>الوحدة:</b> {s_info['الوحدة الحالية']}</p>
+                    </td>
+                    <td style="text-align: left; width: 50%;">
+                        <p><b>رقم الترسيم:</b> {s_info['المعرف']}</p>
+                        <p><b>المرحلة:</b> {s_info['المرحلة الحالية']}</p>
+                    </td>
+                </tr>
+            </table>
+            <!-- جدول الأعداد -->
+            <table style="width: 100%; border-collapse: collapse; margin-top: 20px; text-align: center;">
+                <tr style="background-color: #1A5276; color: white;">
+                    <th>المادة</th><th>العدد</th>
+                </tr>
+                <tr><td style="border: 1px solid #ddd;">الحفظ</td><td style="border: 1px solid #ddd;">{g_info['الحفظ']}</td></tr>
+                <tr><td style="border: 1px solid #ddd;">الرواية</td><td style="border: 1px solid #ddd;">{g_info['الرواية']}</td></tr>
+                <tr><td style="border: 1px solid #ddd;">الدراية</td><td style="border: 1px solid #ddd;">{g_info['الدراية']}</td></tr>
+                <tr><td style="border: 1px solid #ddd;">الحضور</td><td style="border: 1px solid #ddd;">{g_info['الحضور']}</td></tr>
+            </table>
+            <div style="margin-top: 20px; text-align: center; font-size: 18px; font-weight: bold;">المعدل العام: {final_score} / 20</div>
         </div>
-        """, unsafe_allow_html=True) 
+        """, unsafe_allow_html=True)
