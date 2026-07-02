@@ -4,7 +4,7 @@ import pandas as pd
 # 1. إعدادات واجهة التطبيق
 st.set_page_config(page_title="نظام الفرع المحلي للرابطة الوطنية للقرآن الكريم بالمكناسي", layout="wide", page_icon="🕌")
 
-# 2. إضافة التنسيقات البصرية المطلوبة (الألوان، التسطير، الأحجام، وتفتيح الشعار)
+# 2. إضافة التنسيقات البصرية المطلوبة
 st.markdown("""
     <style>
     /* تفعيل اتجاه لغة الضاد */
@@ -39,22 +39,21 @@ st.markdown("""
         font-family: 'Cairo', sans-serif;
         font-weight: bold;
         font-size: 32px !important;
-        text-decoration: underline !important; /* إضافة تسطير تحت الاسم */
+        text-decoration: underline !important;
     } 
     
     /* 🟢 عناوين الاستمارات والقوائم الموحدة: نفس الحجم (24px)، لون أخضر فاتح، ومسطرة */
     .custom-heading { 
-        color: #2ECC71 !important; /* لون أخضر فاتح زاهي */
+        color: #2ECC71 !important; 
         text-align: center !important;
         font-family: 'Cairo', sans-serif;
         font-weight: bold;
-        font-size: 24px !important; /* توحيد الحجم */
-        text-decoration: underline !important; /* إضافة تسطير */
+        font-size: 24px !important; 
+        text-decoration: underline !important; 
         margin-top: 20px;
         margin-bottom: 20px;
     }
     
-    /* عناوين القوائم الجانبية أو الصغرى المسطرة أيضاً بلون أخضر فاتح وبنفس الحجم للاتساق */
     h2, h3, h4 {
         color: #2ECC71 !important;
         font-size: 24px !important;
@@ -64,11 +63,12 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 3. الترويسة: الشعار في الأعلى (مع زيادة السطوع والتفتيح برمجياً) وتحته اسم الفرع مسطراً
+# 3. الترويسة: الشعار ممدد وموسع يميناً ويساراً مع الحفاظ على التفتيح والتوسط
 st.markdown("""
-    <div style="text-align: center; margin-bottom: 20px;">
-        <img src="https://raw.githubusercontent.com/mounir-rachdi1980/quran_project/main/logo.jpg" width="150" style="display: block; margin: 0 auto; filter: brightness(1.25); /* تفتيح لون الشعار */">
-        <h1 class="main-title" style="margin-top: 20px; margin-bottom: 25px;">نظام الفرع المحلي للرابطة الوطنية للقرآن الكريم بالمكناسي</h1>
+    <div style="text-align: center; margin-bottom: 20px; width: 100%;">
+        <img src="https://raw.githubusercontent.com/mounir-rachdi1980/quran_project/main/logo.jpg" 
+             style="display: block; margin: 0 auto; width: 100%; max-width: 650px; height: auto; filter: brightness(1.25); border-radius: 4px;">
+        <h1 class="main-title" style="margin-top: 25px; margin-bottom: 25px;">نظام الفرع المحلي للرابطة الوطنية للقرآن الكريم بالمكناسي</h1>
     </div>
 """, unsafe_allow_html=True)
 
