@@ -304,7 +304,7 @@ elif choice == "إعدادات الضوارب (المعاملات)":
 # --- استخراج بطاقة الأعداد ---
 elif choice == "استخراج بطاقة الأعداد":
   from datetime import date
-    today_miladi = date.today().strftime("%d / %m / %Y")
+today_miladi = date.today().strftime("%d / %m / %Y")
     
     st.markdown('<p class="custom-heading">🖨️ استخراج وطباعة كشف الأعداد السنوي</p>', unsafe_allow_html=True)
     
