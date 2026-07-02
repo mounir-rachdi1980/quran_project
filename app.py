@@ -34,16 +34,15 @@ col_logo, col_title = st.columns([1, 5])
 with col_logo:
     # تم ربط الصورة برابط مباشر لتعمل في كل الأحوال ومباشرة دون مشاكل مسارات
     try:
-        st.image("https://raw.githubusercontent.com/quranproject-rm3exhv4647wljki5zdkh9/quran_project/main/logo.jpg", width=120)
+       with col_logo:
+    # محاولة قراءة الشعار المحلي من المستودع
+    try:
+        st.image("logo.jpg", width=120)
     except:
-        # كخيار احتياطي في حال عدم توفر الإنترنت، يبحث في مجلد المشروع المحلي
         try:
-            st.image("logo.jpg", width=120)
+            st.image("logo.png", width=120)
         except:
-            st.warning("🕌")
-
-with col_title:
-    st.markdown("<h1 style='color: #1E4620; margin-top: 15px;'>🕌 نظام الفرع المحلي للرابطة الوطنية للقرآن الكريم بالمكناسي</h1>", unsafe_allow_html=True)
+            st.write("🕌")
 
 # محاكاة قاعدة البيانات والاتصال المبدئي المستقر داخل جلسة العمل
 if 'students_db' not in st.session_state:
