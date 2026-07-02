@@ -304,7 +304,7 @@ elif choice == "إعدادات الضوارب (المعاملات)":
 # --- استخراج بطاقة الأعداد ---
 elif choice == "استخراج بطاقة الأعداد":
     from datetime import date
-    today = date.today().strftime("%d / %m / %Y")
+    today_miladi = date.today().strftime("%d / %m / %Y")
     
     st.markdown('<p class="custom-heading">🖨️ استخراج وطباعة كشف الأعداد السنوي</p>', unsafe_allow_html=True)
     
@@ -318,16 +318,28 @@ elif choice == "استخراج بطاقة الأعداد":
         final_score = round(((g_info['الحفظ']*w['الحفظ']) + (g_info['الرواية']*w['الرواية']) + (g_info['الدراية']*w['الدراية']) + (g_info['الحضور']*w['الحضور'])) / sum(w.values()), 2)
         
         st.markdown(f"""
-        <div style="border: 3px solid #1A5276; padding: 25px; border-radius: 20px; background-color: #FFFFFF; direction: rtl; text-align: right; margin: 0 auto; max-width: 800px; box-shadow: 0px 0px 10px #ccc;">
+        <div style="direction: rtl; text-align: right; margin: 0 auto; max-width: 800px; padding: 20px;">
             <!-- الترويسة -->
             <table style="width: 100%; border: none;">
                 <tr>
-                    <td style="text-align: right;"><b>الجمهورية التونسية</b><br>الرابطة الوطنية للقرآن الكريم بالمكناسي</td>
-                    <td style="text-align: center;"><img src="https://raw.githubusercontent.com/mounir-rachdi1980/quran_project/main/logo.jpg" style="width: 80px;"></td>
-                    <td style="text-align: left;"><b>الحمد لله</b><br>المكناسي في: {today}<br><small>السنة الدراسية: 2025-2026</small></td>
+                    <td style="text-align: right; vertical-align: top;">
+                        <div style="font-weight: bold;">الجمهورية التونسية<br>الرابطة الوطنية للقرآن الكريم بالمكناسي</div>
+                    </td>
+                    <td style="text-align: center;">
+                        <img src="https://raw.githubusercontent.com/mounir-rachdi1980/quran_project/main/logo.jpg" style="width: 100px;">
+                        <div style="border: 2px solid red; color: red; font-size: 22px; font-weight: bold; padding: 5px; margin-top: 10px; display: inline-block;">بطاقة النتائج السنوية</div>
+                    </td>
+                    <td style="text-align: left; vertical-align: top;">
+                        <div style="font-weight: bold;">الحمد لله</div>
+                        <div>المكناسي في: {today_miladi}</div>
+                        <div>التاريخ الهجري: [أضف التاريخ هنا]</div>
+                        <div style="font-weight: bold; margin-top: 5px;">السنة الدراسية: 2025-2026</div>
+                    </td>
                 </tr>
             </table>
-            <hr style="border: 1px solid #1A5276;">
+            
+            <hr style="border: 1px solid #ccc; margin: 20px 0;">
+            
             <!-- بيانات الطالب -->
             <table style="width: 100%; margin-top: 20px;">
                 <tr>
@@ -342,16 +354,19 @@ elif choice == "استخراج بطاقة الأعداد":
                     </td>
                 </tr>
             </table>
+            
             <!-- جدول الأعداد -->
             <table style="width: 100%; border-collapse: collapse; margin-top: 20px; text-align: center;">
-                <tr style="background-color: #1A5276; color: white;">
-                    <th>المادة</th><th>العدد</th>
+                <tr style="background-color: #f2f2f2;">
+                    <th style="border: 1px solid #ddd; padding: 8px;">المادة</th>
+                    <th style="border: 1px solid #ddd; padding: 8px;">العدد</th>
                 </tr>
-                <tr><td style="border: 1px solid #ddd;">الحفظ</td><td style="border: 1px solid #ddd;">{g_info['الحفظ']}</td></tr>
-                <tr><td style="border: 1px solid #ddd;">الرواية</td><td style="border: 1px solid #ddd;">{g_info['الرواية']}</td></tr>
-                <tr><td style="border: 1px solid #ddd;">الدراية</td><td style="border: 1px solid #ddd;">{g_info['الدراية']}</td></tr>
-                <tr><td style="border: 1px solid #ddd;">الحضور</td><td style="border: 1px solid #ddd;">{g_info['الحضور']}</td></tr>
+                <tr><td style="border: 1px solid #ddd; padding: 8px;">الحفظ</td><td style="border: 1px solid #ddd; padding: 8px;">{g_info['الحفظ']}</td></tr>
+                <tr><td style="border: 1px solid #ddd; padding: 8px;">الرواية</td><td style="border: 1px solid #ddd; padding: 8px;">{g_info['الرواية']}</td></tr>
+                <tr><td style="border: 1px solid #ddd; padding: 8px;">الدراية</td><td style="border: 1px solid #ddd; padding: 8px;">{g_info['الدراية']}</td></tr>
+                <tr><td style="border: 1px solid #ddd; padding: 8px;">الحضور</td><td style="border: 1px solid #ddd; padding: 8px;">{g_info['الحضور']}</td></tr>
             </table>
-            <div style="margin-top: 20px; text-align: center; font-size: 18px; font-weight: bold;">المعدل العام: {final_score} / 20</div>
+            
+            <div style="margin-top: 20px; text-align: center; font-size: 20px; font-weight: bold;">المعدل العام: {final_score} / 20</div>
         </div>
         """, unsafe_allow_html=True)
