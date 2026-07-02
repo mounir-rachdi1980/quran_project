@@ -303,12 +303,10 @@ elif choice == "إعدادات الضوارب (المعاملات)":
         st.success("✅ تم تحديث ضوارب المواد بنجاح!")
 
 # --- استخراج بطاقة الأعداد ---
-elif choice == "استخراج بطاقة الأعداد":
-  st.markdown('<p class="custom-heading">🖨️ استخراج وطباعة كشف الأعداد السنوي</p>', unsafe_allow_html=True)
-     if st.session_state.students_db.empty:
-         st.warning("⚠️ لا توجد بيانات طلاب متوفرة لاستخراج الكشوفات.")
-     else:
-         student_id = st.selectbox("اختر معرف الطالب لإنتاج كشفه :", st.session_state.students_db['المعرف'])
+File "/mount/src/quran_project/app.py", line 308
+       if st.session_state.students_db.empty:
+      ^
+IndentationError: unexpected indent
          s_info = st.session_state.students_db[st.session_state.students_db['المعرف'] == student_id].iloc[0]
          g_info = st.session_state.grades_db[st.session_state.grades_db['المعرف'] == student_id].iloc[0]
         
