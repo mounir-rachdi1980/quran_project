@@ -4,9 +4,10 @@ import pandas as pd
 # 1. إعدادات واجهة التطبيق
 st.set_page_config(page_title="نظام الفرع المحلي للرابطة الوطنية للقرآن الكريم بالمكناسي", layout="wide", page_icon="🕌")
 
-# 2. إضافة التنسيقات البصرية وإجبار المتصفح على الاتجاه العربي
+# 2. إضافة التنسيقات البصرية الشاملة (إجبار الخط العريض والألوان وحجم الخطوط في التبويبات والعناوين)
 st.markdown("""
     <style>
+    /* إعدادات الحاوية العامة والاتجاه العربي */
     .block-container {
         padding-top: 2rem !important;
         padding-bottom: 0rem !important;
@@ -15,11 +16,9 @@ st.markdown("""
         direction: rtl !important;
         text-align: right !important;
     }
-    
     .stMarkdown, p, label {
         text-align: right !important;
     }
-    
     div[data-testid="stForm"], div[data-testid="stTab"] {
         direction: rtl !important;
     }
@@ -27,7 +26,6 @@ st.markdown("""
         margin: 0 auto !important;
         max-width: 900px !important; 
     }
-    
     input, select, textarea {
         direction: rtl !important;
         text-align: right !important;
@@ -58,15 +56,32 @@ st.markdown("""
         margin-bottom: 15px;
     }
     
-    h2, h3, h4 {
-        font-size: 24px !important;
-        text-align: right !important;
+    /* استهداف نصوص أزرار التبويبات (Tabs) من الجذور وجعلها كبيرة وعريضة جداً */
+    button[data-testid="stMarkdownContainer"] p {
+        font-size: 22px !important;
+        font-weight: 900 !important; /* خط عريض جداً */
+        color: #2C3E50 !important;
     }
     
-    /* تنسيق نصوص التبويبات الجانبية */
-    button[data-testid="stMarkdownContainer"] p {
-        font-size: 18px !important;
+    /* تمييز التبويب النشط حالياً بلون مختلف لسهولة القراءة */
+    button[aria-selected="true"] p {
+        color: #FF4D4D !important;
+        text-decoration: underline !important;
+    }
+
+    /* تنسيق خاص لعناوين المراحل والوحدات لتبدو واضحة وضخمة */
+    .stage-title {
+        font-size: 26px !important;
         font-weight: bold !important;
+        border-bottom: 2px solid #ccc;
+        padding-bottom: 8px;
+        margin-bottom: 15px;
+    }
+    .unit-title {
+        font-size: 20px !important;
+        font-weight: bold !important;
+        color: #2E4053 !important;
+        margin-top: 10px;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -140,15 +155,14 @@ if choice == "تسجيل طالب جديد وتوزيعه":
             else:
                 st.error("⚠️ يرجى ملء الخانات الأساسية المطلوبة.")
 
-    # 🏢 التبويب الجمالي لعرض وتوزيع الطلبة حسب المراحل والوحدات التعليمية
+    # 🏢 التوزيع الهيكلي للطلاب حسب المراحل والوحدات التعليمية
     st.markdown('<p class="custom-heading">🏢 التوزيع الهيكلي للطلاب حسب المراحل والوحدات التعليمية</p>', unsafe_allow_html=True)
     
     tab1, tab2, tab3 = st.tabs(list(stages_structure.keys()))
     
     # محتويات تبويب المرحلة الأولى
     with tab1:
-        # عناوين المراحل بخط عريض ملون وحجم أكبر بشكل مضمون ومجرب عبر HTML المباشر
-        st.markdown('<div style="color: #3498DB !important; font-size: 28px !important; font-weight: bold !important; font-family: \'Cairo\', sans-serif; text-decoration: underline; margin-bottom: 10px;">📜 المرحلة الأولى: رواية الإمام قالون</div>', unsafe_allow_html=True)
+        st.markdown('<div class="stage-title" style="color: #3498DB;">📜 المرحلة الأولى: رواية الإمام قالون</div>', unsafe_allow_html=True)
         st.info("تشمل هذه المرحلة ركيزة الرواية وبها 4 وحدات دراسية للارتقاء.")
         
         for unit in stages_structure["المرحلة الأولى: رواية الإمام قالون"]:
@@ -156,11 +170,10 @@ if choice == "تسجيل طالب جديد وتوزيعه":
                 (st.session_state.students_db['المرحلة الحالية'] == "المرحلة الأولى: رواية الإمام قالون") & 
                 (st.session_state.students_db['الوحدة الحالية'] == unit)
             ]
-            st.markdown(f"🔹 **{unit}** (عدد الطلاب الحركيين حالياً: {len(filtered_df)})")
+            st.markdown(f'<div class="unit-title">🔹 {unit} <span style="font-size:14px; color:gray;">(عدد الطلاب الحركيين حالياً: {len(filtered_df)})</span></div>', unsafe_allow_html=True)
             if not filtered_df.empty:
                 st.dataframe(filtered_df[['المعرف', 'الاسم الثلاثي', 'اللقب', 'المهنة', 'بطاقة التعريف']], use_container_width=True)
                 
-                # إضافة زر حذف مباشر وتلقائي لكل وحدة عبر حاوية مخصصة
                 with st.expander(f"🗑️ خيار حذف سريع لطلبة ({unit})"):
                     del_id = st.selectbox("اختر معرف الطالب المراد حذفه نهائياً من هذه الوحدة:", filtered_df['المعرف'], key=f"del_tab1_{unit}")
                     if st.button("تأكيد الحذف الفوري للطالب", key=f"btn_del_tab1_{unit}", type="primary"):
@@ -173,7 +186,7 @@ if choice == "تسجيل طالب جديد وتوزيعه":
                 
     # محتويات تبويب المرحلة الثانية
     with tab2:
-        st.markdown('<div style="color: #E67E22 !important; font-size: 28px !important; font-weight: bold !important; font-family: \'Cairo\', sans-serif; text-decoration: underline; margin-bottom: 10px;">📖 المرحلة الثانية: قراءة نافع وحفص عن عاصم</div>', unsafe_allow_html=True)
+        st.markdown('<div class="stage-title" style="color: #E67E22;">📖 المرحلة الثانية: قراءة نافع وحفص عن عاصم</div>', unsafe_allow_html=True)
         st.info("تشمل قراءة الإمام نافع برافديه (قالون وورش) إضافةً إلى رواية حفص وبها 3 وحدات.")
         
         for unit in stages_structure["المرحلة الثانية: قراءة نافع وحفص عن عاصم"]:
@@ -181,7 +194,7 @@ if choice == "تسجيل طالب جديد وتوزيعه":
                 (st.session_state.students_db['المرحلة الحالية'] == "المرحلة الثانية: قراءة نافع وحفص عن عاصم") & 
                 (st.session_state.students_db['الوحدة الحالية'] == unit)
             ]
-            st.markdown(f"🔹 **{unit}** (عدد الطلاب الحركيين حالياً: {len(filtered_df)})")
+            st.markdown(f'<div class="unit-title">🔹 {unit} <span style="font-size:14px; color:gray;">(عدد الطلاب الحركيين حالياً: {len(filtered_df)})</span></div>', unsafe_allow_html=True)
             if not filtered_df.empty:
                 st.dataframe(filtered_df[['المعرف', 'الاسم الثلاثي', 'اللقب', 'المهنة', 'بطاقة التعريف']], use_container_width=True)
                 
@@ -197,7 +210,7 @@ if choice == "تسجيل طالب جديد وتوزيعه":
 
     # محتويات تبويب المرحلة الثالثة
     with tab3:
-        st.markdown('<div style="color: #9B5DE5 !important; font-size: 28px !important; font-weight: bold !important; font-family: \'Cairo\', sans-serif; text-decoration: underline; margin-bottom: 10px;">🕌 المرحلة الثالثة: علم القراءات المتقدمة</div>', unsafe_allow_html=True)
+        st.markdown('<div class="stage-title" style="color: #9B5DE5;">🕌 المرحلة الثالثة: علم القراءات المتقدمة</div>', unsafe_allow_html=True)
         st.info("مرحلة علم القراءات المتقدمة والأسانيد وبها 4 وحدات كبرى.")
         
         for unit in stages_structure["المرحلة الثالثة: القراءات"]:
@@ -205,7 +218,7 @@ if choice == "تسجيل طالب جديد وتوزيعه":
                 (st.session_state.students_db['المرحلة الحالية'] == "المرحلة الثالثة: القراءات") & 
                 (st.session_state.students_db['الوحدة الحالية'] == unit)
             ]
-            st.markdown(f"🔹 **{unit}** (عدد الطلاب الحركيين حالياً: {len(filtered_df)})")
+            st.markdown(f'<div class="unit-title">🔹 {unit} <span style="font-size:14px; color:gray;">(عدد الطلاب الحركيين حالياً: {len(filtered_df)})</span></div>', unsafe_allow_html=True)
             if not filtered_df.empty:
                 st.dataframe(filtered_df[['المعرف', 'الاسم الثلاثي', 'اللقب', 'المهنة', 'بطاقة التعريف']], use_container_width=True)
                 
@@ -219,7 +232,7 @@ if choice == "تسجيل طالب جديد وتوزيعه":
             else:
                 st.caption("لا يوجد طلاب مسجلون في هذه الوحدة حالياً.")
 
-# --- قسم إدارة وحذف الطلاب الرئيسي ---
+# --- باقي الأقسام (إدارة وحذف الطلاب الرئيسي، رصد الدرجات، إعدادات الضوارب، استخراج بطاقة الأعداد) تبقى كما هي دون تغيير لسلامة المنطق البرمجي ---
 elif choice == "إدارة وحذف الطلاب":
     st.markdown('<p class="custom-heading">⚙️ لوحة التحكم في مسار الطلاب وإجراء الحذف</p>', unsafe_allow_html=True)
     if st.session_state.students_db.empty:
@@ -255,7 +268,6 @@ elif choice == "إدارة وحذف الطلاب":
                 st.success("🗑️ تم حذف الطالب وكافة سجلاته بنجاح!")
                 st.rerun()
 
-# --- رصد الأعداد والدرجات ---
 elif choice == "رصد وتعديل الدرجات":
     st.markdown('<p class="custom-heading">📊 دفتر رصد أعداد وتقييمات الطلاب</p>', unsafe_allow_html=True)
     if st.session_state.students_db.empty:
@@ -277,7 +289,6 @@ elif choice == "رصد وتعديل الدرجات":
             st.session_state.grades_db.loc[st.session_state.grades_db['المعرف'] == student_id, ['الحفظ', 'الرواية', 'الدراية', 'الحضور']] = [hifz, riwaya, diraya, hodoor]
             st.success("✅ تم تحديث وحفظ أعداد الطالب بنجاح في النظام!")
 
-# --- إعدادات الضوارب ---
 elif choice == "إعدادات الضوارب (المعاملات)":
     st.markdown('<p class="custom-heading">⚙️ تعديل ضوارب المواد (المعاملات)</p>', unsafe_allow_html=True)
     col1, col2, col3, col4 = st.columns(4)
@@ -290,7 +301,6 @@ elif choice == "إعدادات الضوارب (المعاملات)":
         st.session_state.weights = {'الحفظ': w_hifz, 'الرواية': w_riwaya, 'الدراية': w_diraya, 'الحضور': w_hodoor}
         st.success("✅ تم تحديث ضوارب المواد بنجاح!")
 
-# --- استخراج بطاقة الأعداد ---
 elif choice == "استخراج بطاقة الأعداد":
     st.markdown('<p class="custom-heading">🖨️ استخراج وطباعة كشف الأعداد السنوي</p>', unsafe_allow_html=True)
     if st.session_state.students_db.empty:
