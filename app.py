@@ -1,10 +1,10 @@
 import streamlit as st
 import pandas as pd
 
-# إعدادات واجهة التطبيق باللغة العربية مع تعديل العنوان الجديد في المتصفح
+# 1. إعدادات واجهة التطبيق
 st.set_page_config(page_title="نظام الفرع المحلي للرابطة الوطنية للقرآن الكريم بالمكناسي", layout="wide", page_icon="🕌")
 
-# إضافة تنسيق لغة الضاد ليكون الاتجاه من اليمين إلى اليسار (RTL) بشكل احترافي ومريح للعين
+# 2. إضافة تنسيق متطور للألوان والاتجاه والترتيب (RTL ووسطي)
 st.markdown("""
     <style>
     /* تنسيق المحتوى الرئيسي والقوائم الجانبية ليصبح عربياً بالكامل */
@@ -12,9 +12,18 @@ st.markdown("""
         direction: rtl !important;
         text-align: right !important;
     }
-    /* محاذاة العناوين والنصوص داخل الجداول */
-    th, td, .stMarkdown, p, h1, h2, h3, h4, h5, h6, label {
+    /* محاذاة النصوص والبطاقات */
+    .stMarkdown, p, label {
         text-align: right !important;
+    }
+    /* محاذاة الترويسة في المنتصف تماماً */
+    .centered-header {
+        text-align: center !important;
+        direction: rtl !important;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
     }
     /* ضبط اتجاه حقول الإدخال */
     input, select, textarea {
@@ -25,25 +34,37 @@ st.markdown("""
     div[data-testid="stHorizontalBlock"] {
         direction: rtl !important;
     }
+    
+    /* 🎨 ألوان مخصصة وزاهية للعناوين والكتابة 🎨 */
+    h1 { 
+        color: #1B4F72 !important; /* أزرق داكن فاخر ورصين للعنوان الرئيسي */
+        text-align: center !important;
+    } 
+    h2 { color: #1E8449 !important; } /* أخضر زاهي ومريح لعناوين الأقسام الرئيسية */
+    h3 { color: #2E86C1 !important; } /* أزرق مشرق وجذاب للقوائم والبيانات */
+    h4 { color: #D35400 !important; } /* برتقالي دافئ مميز للعبارات التوضيحية الفرعية */
     </style>
 """, unsafe_allow_html=True)
 
-# ترويسة الصفحة: عرض الشعار والعنوان بجانب بعضهما بشكل متناسق
-col_logo, col_title = st.columns([1, 5])
+# 3. ترويسة الصفحة: الشعار في الأعلى وتحته العنوان مباشرة (كلاهما في منتصف الصفحة)
+st.markdown('<div class="centered-header">', unsafe_allow_html=True)
 
-with col_logo:
+# عرض الشعار في الوسط والأعلى
+try:
+    st.image("logo.jpg", width=140)
+except:
     try:
-        st.image("logo.jpg", width=120)
+        st.image("logo.png", width=140)
     except:
-        try:
-            st.image("logo.png", width=120)
-        except:
-            st.write("🕌")
+        st.write("🕌")
 
-with col_title:
-    st.markdown("<h1 style='color: #1E4620; margin-top: 15px;'>🕌 نظام الفرع المحلي للرابطة الوطنية للقرآن الكريم بالمكناسي</h1>", unsafe_allow_html=True)
+# عرض العنوان الرئيسي في الوسط (بدون رمز المسجد على اليمين بناءً على طلبك)
+st.markdown("<h1 style='margin-top: 15px; margin-bottom: 25px;'>نظام الفرع المحلي للرابطة الوطنية للقرآن الكريم بالمكناسي</h1>", unsafe_allow_html=True)
 
-# محاكاة قاعدة البيانات والاتصال المبدئي المستقر داخل جلسة العمل
+st.markdown('</div>', unsafe_allow_html=True) # إغلاق حاوية الترويسة الوسطية
+
+
+# --- محاكاة قاعدة البيانات والاتصال المبدئي المستقر داخل جلسة العمل ---
 if 'students_db' not in st.session_state:
     st.session_state.students_db = pd.DataFrame(columns=['المعرف', 'الاسم الثلاثي', 'اللقب', 'تاريخ الولادة', 'بطاقة التعريف', 'المهنة'])
 if 'grades_db' not in st.session_state:
@@ -112,7 +133,7 @@ elif choice == "رصد وتعديل الدرجات":
         student_id = st.selectbox("اختر معرف الطالب المراد رصد درجاته", merged_df['المعرف'])
         
         current_student = merged_df[merged_df['المعرف'] == student_id].iloc[0]
-        st.write(f"📝 رصد ودرجات الطالب الحالي: **{current_student['الاسم الثلاثي']} {current_student['اللقب']}**")
+        st.write(f"#### 📝 رصد ودرجات الطالب الحالي: **{current_student['الاسم الثلاثي']} {current_student['اللقب']}**")
         
         col1, col2, col3, col4 = st.columns(4)
         with col1: hifz = st.number_input("مادة الحفظ (من 20)", min_value=0.0, max_value=20.0, value=float(current_student['الحفظ']))
@@ -134,28 +155,27 @@ elif choice == "استخراج بطاقة الأعداد":
         s_info = st.session_state.students_db[st.session_state.students_db['المعرف'] == student_id].iloc[0]
         g_info = st.session_state.grades_db[st.session_state.grades_db['المعرف'] == student_id].iloc[0]
         
-        # الحساب التلقائي المعدل بناء على الضوارب والدرجات المرصودة
         total_points = (g_info['الحفظ'] * w['الحفظ']) + (g_info['الرواية'] * w['الرواية']) + (g_info['الدراية'] * w['الدراية']) + (g_info['الحضور'] * w['الحضور'])
         sum_weights = sum(w.values())
         final_score = round(total_points / sum_weights, 2)
         
         result = "ناجح ومبارك له 🎉" if final_score >= 10.0 else "راسب وله فرصة تدارك 📑"
-        result_color = "#1E4620" if final_score >= 10.0 else "#8B0000"
+        result_color = "#1E8449" if final_score >= 10.0 else "#8B0000"
         
         st.markdown(f"""
-        <div style="border: 3px double #1E4620; padding: 25px; border-radius: 10px; background-color: #FAFAFA; direction: rtl; font-family: 'Cairo', sans-serif; text-align: right;">
+        <div style="border: 3px double #1B4F72; padding: 25px; border-radius: 10px; background-color: #FAFAFA; direction: rtl; font-family: 'Cairo', sans-serif; text-align: right;">
             <div style="text-align: center;">
-                <h2 style="margin: 0; color: #1E4620;">بطاقة تقييم وكشف أعداد طالب سنوي</h2>
+                <h2 style="margin: 0; color: #1B4F72;">بطاقة تقييم وكشف أعداد طالب سنوي</h2>
                 <h4 style="color: gray; margin-top: 5px;">الفرع المحلي للرابطة الوطنية للقرآن الكريم بالمكناسي</h4>
-                <hr style="border-top: 2px solid #1E4620; margin: 15px 0;">
+                <hr style="border-top: 2px solid #1B4F72; margin: 15px 0;">
             </div>
-            <table style="width: 100%; font-size: 18px; margin-bottom: 20px; text-align: right; direction: rtl; border: none;">
+            <table style="width: 100%; font-size: 18px; margin-bottom: 20px; text-align: right; direction: rtl; border: none; color: #333;">
                 <tr><td style="padding: 5px; border:none;"><b>المعرف الخاص:</b> {s_info['المعرف']}</td><td style="padding: 5px; border:none;"><b>الاسم الكامل:</b> {s_info['الاسم الثلاثي']} {s_info['اللقب']}</td></tr>
                 <tr><td style="padding: 5px; border:none;"><b>المهنة / الصفة:</b> {s_info['المهنة']}</td><td style="padding: 5px; border:none;"><b>تاريخ الولادة:</b> {s_info['تاريخ الولادة']}</td></tr>
                 <tr><td style="padding: 5px; border:none;"><b>بطاقة التعريف الوطنية:</b> {s_info['بطاقة التعريف']}</td><td style="padding: 5px; border:none;"></td></tr>
             </table>
             <table style="width: 100%; border-collapse: collapse; text-align: center; font-size: 18px; direction: rtl;">
-                <tr style="background-color: #1E4620; color: white;">
+                <tr style="background-color: #1B4F72; color: white;">
                     <th style="padding: 10px; border: 1px solid black; text-align: center !important;">المادة التقييمية</th>
                     <th style="padding: 10px; border: 1px solid black; text-align: center !important;">العدد المرصود (من 20)</th>
                     <th style="padding: 10px; border: 1px solid black; text-align: center !important;">ضارب المادة</th>
@@ -165,7 +185,7 @@ elif choice == "استخراج بطاقة الأعداد":
                 <tr><td style="padding: 10px; border: 1px solid black; text-align: right;">مادة الدراية والتفسير</td><td style="border: 1px solid black; padding: 10px;">{g_info['الدراية']}</td><td style="border: 1px solid black; padding: 10px;">{w['الدراية']}</td></tr>
                 <tr><td style="padding: 10px; border: 1px solid black; text-align: right;">مادة الحضور والمواظبة</td><td style="border: 1px solid black; padding: 10px;">{g_info['الحضور']}</td><td style="border: 1px solid black; padding: 10px;">{w['الحضور']}</td></tr>
             </table>
-            <div style="margin-top: 20px; font-size: 20px; font-weight: bold; color: #1E4620;">
+            <div style="margin-top: 20px; font-size: 20px; font-weight: bold; color: #1B4F72;">
                 <p>المعدل العام الإجمالي الحاصل عليه: {final_score} / 20</p>
                 <p>النتيجة والقرار النهائي للجنة الإدارية: <span style="color: {result_color};">{result}</span></p>
             </div>
