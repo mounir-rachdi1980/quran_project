@@ -302,22 +302,26 @@ elif choice == "إعدادات الضوارب (المعاملات)":
         st.session_state.weights = {'الحفظ': w_hifz, 'الرواية': w_riwaya, 'الدراية': w_diraya, 'الحضور': w_hodoor}
         st.success("✅ تم تحديث ضوارب المواد بنجاح!")
 
-# --- استخراج بطاقة الأعداد ---
-File "/mount/src/quran_project/app.py", line 308
-       if st.session_state.students_db.empty:
-      ^
-IndentationError: unexpected indent
-         s_info = st.session_state.students_db[st.session_state.students_db['المعرف'] == student_id].iloc[0]
-         g_info = st.session_state.grades_db[st.session_state.grades_db['المعرف'] == student_id].iloc[0]
+x; text-align: center; font-size: 20px; font-weight: bold; color: #2C3E50;">
+                <p>المعدل العام: {final_score
+                                  # --- استخراج بطاقة الأعداد ---
+elif choice == "استخراج بطاقة الأعداد":
+    st.markdown('<p class="custom-heading">🖨️ استخراج وطباعة كشف الأعداد السنوي</p>', unsafe_allow_html=True)
+    if st.session_state.students_db.empty:
+        st.warning("⚠️ لا توجد بيانات طلاب متوفرة لاستخراج الكشوفات.")
+    else:
+        student_id = st.selectbox("اختر معرف الطالب لإنتاج كشفه :", st.session_state.students_db['المعرف'])
+        s_info = st.session_state.students_db[st.session_state.students_db['المعرف'] == student_id].iloc[0]
+        g_info = st.session_state.grades_db[st.session_state.grades_db['المعرف'] == student_id].iloc[0]
         
-         # حساب المعدل
-         total_points = (g_info['الحفظ'] * w['الحفظ']) + (g_info['الرواية'] * w['الرواية']) + (g_info['الدراية'] * w['الدراية']) + (g_info['الحضور'] * w['الحضور'])
-          sum_weights = sum(w.values())
-         final_score = round(total_points / sum_weights, 2)
+        # حساب المعدل
+        total_points = (g_info['الحفظ'] * w['الحفظ']) + (g_info['الرواية'] * w['الرواية']) + (g_info['الدراية'] * w['الدراية']) + (g_info['الحضور'] * w['الحضور'])
+        sum_weights = sum(w.values())
+        final_score = round(total_points / sum_weights, 2)
         
-         # التصميم الجديد للبطاقة
-         st.markdown(f"""
-          <div style="border: 2px solid #2C3E50; padding: 30px; border-radius: 15px; background-color: #FFFFFF; direction: rtl; text-align: right; margin: 0 auto; max-width: 800px; box-shadow: 5px 5px 15px #ccc;">
+        # التصميم الجديد للبطاقة
+        st.markdown(f"""
+        <div style="border: 2px solid #2C3E50; padding: 30px; border-radius: 15px; background-color: #FFFFFF; direction: rtl; text-align: right; margin: 0 auto; max-width: 800px; box-shadow: 5px 5px 15px #ccc;">
             <div style="text-align: center;">
                 <img src="https://raw.githubusercontent.com/mounir-rachdi1980/quran_project/main/logo.jpg" style="width: 120px; margin-bottom: 10px;">
                 <h2 style="color: #2C3E50; margin: 0;">الرابطة الوطنية للقرآن الكريم بالمكناسي</h2>
@@ -341,5 +345,5 @@ IndentationError: unexpected indent
             <div style="margin-top: 25px; text-align: center; font-size: 20px; font-weight: bold; color: #2C3E50;">
                 <p>المعدل العام: {final_score} / 20</p>
             </div>
-         </div>
+        </div>
         """, unsafe_allow_html=True)
