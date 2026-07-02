@@ -1,8 +1,8 @@
 import streamlit as st
 import pandas as pd
 
-# إعدادات واجهة التطبيق باللغة العربية
-st.set_page_config(page_title="نظام إدارة الجمعية القرآنية", layout="wide", page_icon="🕌")
+# إعدادات واجهة التطبيق باللغة العربية مع تعديل العنوان الجديد في المتصفح
+st.set_page_config(page_title="نظام الفرع المحلي للرابطة الوطنية للقرآن الكريم بالمكناسي", layout="wide", page_icon="🕌")
 
 # إضافة تنسيق لغة الضاد ليكون الاتجاه من اليمين إلى اليسار (RTL) بشكل احترافي ومريح للعين
 st.markdown("""
@@ -28,7 +28,22 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.markdown("<h1 style='text-align: center; color: #1E4620;'>🕌 نظام إدارة الجمعية القرآنية السحابي</h1>", unsafe_allow_html=True)
+# ترويسة الصفحة: عرض الشعار والعنوان بجانب بعضهما بشكل متناسق باستخدام رابط خارجي للصورة
+col_logo, col_title = st.columns([1, 5])
+
+with col_logo:
+    # تم ربط الصورة برابط مباشر لتعمل في كل الأحوال ومباشرة دون مشاكل مسارات
+    try:
+        st.image("https://raw.githubusercontent.com/quranproject-rm3exhv4647wljki5zdkh9/quran_project/main/logo.jpg", width=120)
+    except:
+        # كخيار احتياطي في حال عدم توفر الإنترنت، يبحث في مجلد المشروع المحلي
+        try:
+            st.image("logo.jpg", width=120)
+        except:
+            st.warning("🕌")
+
+with col_title:
+    st.markdown("<h1 style='color: #1E4620; margin-top: 15px;'>🕌 نظام الفرع المحلي للرابطة الوطنية للقرآن الكريم بالمكناسي</h1>", unsafe_allow_html=True)
 
 # محاكاة قاعدة البيانات والاتصال المبدئي المستقر داخل جلسة العمل
 if 'students_db' not in st.session_state:
@@ -133,7 +148,7 @@ elif choice == "استخراج بطاقة الأعداد":
         <div style="border: 3px double #1E4620; padding: 25px; border-radius: 10px; background-color: #FAFAFA; direction: rtl; font-family: 'Cairo', sans-serif; text-align: right;">
             <div style="text-align: center;">
                 <h2 style="margin: 0; color: #1E4620;">بطاقة تقييم وكشف أعداد طالب سنوي</h2>
-                <h4 style="color: gray; margin-top: 5px;">الجمعية القرآنية الموقرة</h4>
+                <h4 style="color: gray; margin-top: 5px;">الفرع المحلي للرابطة الوطنية للقرآن الكريم بالمكناسي</h4>
                 <hr style="border-top: 2px solid #1E4620; margin: 15px 0;">
             </div>
             <table style="width: 100%; font-size: 18px; margin-bottom: 20px; text-align: right; direction: rtl; border: none;">
@@ -147,13 +162,13 @@ elif choice == "استخراج بطاقة الأعداد":
                     <th style="padding: 10px; border: 1px solid black; text-align: center !important;">العدد المرصود (من 20)</th>
                     <th style="padding: 10px; border: 1px solid black; text-align: center !important;">ضارب المادة</th>
                 </tr>
-                <tr><td style="padding: 10px; border: 1px solid black;">مادة الحفظ والأداء</td><td style="border: 1px solid black; padding: 10px;">{g_info['الحفظ']}</td><td style="border: 1px solid black; padding: 10px;">{w['الحفظ']}</td></tr>
-                <tr><td style="padding: 10px; border: 1px solid black;">مادة الرواية والقواعد</td><td style="border: 1px solid black; padding: 10px;">{g_info['الرواية']}</td><td style="border: 1px solid black; padding: 10px;">{w['الرواية']}</td></tr>
-                <tr><td style="padding: 10px; border: 1px solid black;">مادة الدراية والتفسير</td><td style="border: 1px solid black; padding: 10px;">{g_info['الدراية']}</td><td style="border: 1px solid black; padding: 10px;">{w['الدراية']}</td></tr>
-                <tr><td style="padding: 10px; border: 1px solid black;">مادة الحضور والمواظبة</td><td style="border: 1px solid black; padding: 10px;">{g_info['الحضور']}</td><td style="border: 1px solid black; padding: 10px;">{w['الحضور']}</td></tr>
+                <tr><td style="padding: 10px; border: 1px solid black; text-align: right;">مادة الحفظ والأداء</td><td style="border: 1px solid black; padding: 10px;">{g_info['الحفظ']}</td><td style="border: 1px solid black; padding: 10px;">{w['الحفظ']}</td></tr>
+                <tr><td style="padding: 10px; border: 1px solid black; text-align: right;">مادة الرواية والقواعد</td><td style="border: 1px solid black; padding: 10px;">{g_info['الرواية']}</td><td style="border: 1px solid black; padding: 10px;">{w['الرواية']}</td></tr>
+                <tr><td style="padding: 10px; border: 1px solid black; text-align: right;">مادة الدراية والتفسير</td><td style="border: 1px solid black; padding: 10px;">{g_info['الدراية']}</td><td style="border: 1px solid black; padding: 10px;">{w['الدراية']}</td></tr>
+                <tr><td style="padding: 10px; border: 1px solid black; text-align: right;">مادة الحضور والمواظبة</td><td style="border: 1px solid black; padding: 10px;">{g_info['الحضور']}</td><td style="border: 1px solid black; padding: 10px;">{w['الحضور']}</td></tr>
             </table>
-            <div style="margin-top: 20px; font-size: 20px; font-weight: bold;">
-                <p>المعدل العام الإجمالي الحاصل عليه: <span style="color: #1E4620;">{final_score} / 20</span></p>
+            <div style="margin-top: 20px; font-size: 20px; font-weight: bold; color: #1E4620;">
+                <p>المعدل العام الإجمالي الحاصل عليه: {final_score} / 20</p>
                 <p>النتيجة والقرار النهائي للجنة الإدارية: <span style="color: {result_color};">{result}</span></p>
             </div>
         </div>
