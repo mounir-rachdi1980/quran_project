@@ -304,7 +304,7 @@ elif choice == "إعدادات الضوارب (المعاملات)":
 
 # --- استخراج بطاقة الأعداد ---
 elif choice == "استخراج بطاقة الأعداد":
-    st.markdown('<p class="custom-heading">🖨️ استخراج وطباعة كشف الأعداد السنوي</p>', unsafe_allow_html=True)
+st.markdown('<p class="custom-heading">🖨️ استخراج وطباعة كشف الأعداد السنوي</p>', unsafe_allow_html=True)
     if st.session_state.students_db.empty:
         st.warning("⚠️ لا توجد بيانات طلاب متوفرة لاستخراج الكشوفات.")
     else:
@@ -312,43 +312,36 @@ elif choice == "استخراج بطاقة الأعداد":
         s_info = st.session_state.students_db[st.session_state.students_db['المعرف'] == student_id].iloc[0]
         g_info = st.session_state.grades_db[st.session_state.grades_db['المعرف'] == student_id].iloc[0]
         
+        # حساب المعدل
         total_points = (g_info['الحفظ'] * w['الحفظ']) + (g_info['الرواية'] * w['الرواية']) + (g_info['الدراية'] * w['الدراية']) + (g_info['الحضور'] * w['الحضور'])
         sum_weights = sum(w.values())
         final_score = round(total_points / sum_weights, 2)
         
-        if final_score >= 10.0:
-            result = "ناجح ومرتقى للوحدة الموالية بموجب تفوقه 🎓"
-            result_color = "#27AE60"
-        else:
-            result = "راسب وله فرصة تدارك في نفس الوحدة الحالية 📑"
-            result_color = "#8B0000"
-            
+        # التصميم الجديد للبطاقة
         st.markdown(f"""
-        <div style="border: 3px double #FF4D4D; padding: 25px; border-radius: 10px; background-color: #FAFAFA; direction: rtl; font-family: 'Cairo', sans-serif; text-align: right; margin: 0 auto; max-width: 900px;">
+        <div style="border: 2px solid #2C3E50; padding: 30px; border-radius: 15px; background-color: #FFFFFF; direction: rtl; text-align: right; margin: 0 auto; max-width: 800px; box-shadow: 5px 5px 15px #ccc;">
             <div style="text-align: center;">
-                <h2 style="margin: 0; color: #FF4D4D; text-decoration: underline;">بطاقة تقييم وكشف أعداد طالب سنوي</h2>
-                <h4 style="color: gray; margin-top: 5px; text-decoration: none;">الفرع المحلي للرابطة الوطنية للقرآن الكريم بالمكناسي</h4>
-                <hr style="border-top: 2px solid #FF4D4D; margin: 15px 0;">
+                <img src="https://raw.githubusercontent.com/mounir-rachdi1980/quran_project/main/logo.jpg" style="width: 120px; margin-bottom: 10px;">
+                <h2 style="color: #2C3E50; margin: 0;">الرابطة الوطنية للقرآن الكريم بالمكناسي</h2>
+                <h3 style="color: #555; margin-top: 5px;">بطاقة النتائج السنوية</h3>
             </div>
-            <table style="width: 100%; font-size: 18px; margin-bottom: 20px; text-align: right; direction: rtl; border: none; color: #333;">
-                <tr><td style="padding: 5px; border:none;"><b>المعرف الخاص :</b> {s_info['المعرف']}</td><td style="padding: 5px; border:none;"><b>الاسم الكامل :</b> {s_info['الاسم الثلاثي']} {s_info['اللقب']}</td></tr>
-                <tr><td style="padding: 5px; border:none;"><b>المرحلة الدراسية :</b> {s_info['المرحلة الحالية']}</td><td style="padding: 5px; border:none;"><b>الوحدة التقييمية :</b> {s_info['الوحدة الحالية']}</td></tr>
-                <tr><td style="padding: 5px; border:none;"><b>بطاقة التعريف الوطنية :</b> {s_info['بطاقة التعريف']}</td><td style="padding: 5px; border:none;"><b>المهنة / الصفة :</b> {s_info['المهنة']}</td></tr>
-            </table>
-            <table style="width: 100%; border-collapse: collapse; text-align: center; font-size: 18px; direction: rtl;">
-                <tr style="background-color: #FF4D4D; color: white;">
-                    <th style="padding: 10px; border: 1px solid black; text-align: center !important;">المادة التقييمية</th>
-                    <th style="padding: 10px; border: 1px solid black; text-align: center !important;">العدد المرصود (من 20)</th>
-                    <th style="padding: 10px; border: 1px solid black; text-align: center !important;">ضارب المادة</th>
+            <hr style="border: 1px solid #2C3E50;">
+            <div style="font-size: 18px; line-height: 2;">
+                <p><b>اسم الطالب:</b> {s_info['الاسم الثلاثي']} {s_info['اللقب']}</p>
+                <p><b>المرحلة:</b> {s_info['المرحلة الحالية']} - <b>الوحدة:</b> {s_info['الوحدة الحالية']}</p>
+            </div>
+            <table style="width: 100%; border-collapse: collapse; margin-top: 20px; text-align: center;">
+                <tr style="background-color: #2C3E50; color: white;">
+                    <th style="padding: 10px; border: 1px solid #ddd;">المادة</th>
+                    <th style="padding: 10px; border: 1px solid #ddd;">العدد</th>
                 </tr>
-                <tr><td style="padding: 10px; border: 1px solid black; text-align: right;">مادة الحفظ والأداء</td><td style="border: 1px solid black; padding: 10px;">{g_info['الحفظ']}</td><td style="border: 1px solid black; padding: 10px;">{w['الحفظ']}</td></tr>
-                <tr><td style="padding: 10px; border: 1px solid black; text-align: right;">مادة الرواية والقواعد</td><td style="border: 1px solid black; padding: 10px;">{g_info['الرواية']}</td><td style="border: 1px solid black; padding: 10px;">{w['الرواية']}</td></tr>
-                <tr><td style="padding: 10px; border: 1px solid black; text-align: right;">مادة الدراية والتفسير</td><td style="border: 1px solid black; padding: 10px;">{g_info['الدراية']}</td><td style="border: 1px solid black; padding: 10px;">{w['الدراية']}</td></tr>
-                <tr><td style="padding: 10px; border: 1px solid black; text-align: right;">مادة الحضور والمواظبة</td><td style="border: 1px solid black; padding: 10px;">{g_info['الحضور']}</td><td style="border: 1px solid black; padding: 10px;">{w['الحضور']}</td></tr>
+                <tr><td style="padding: 10px; border: 1px solid #ddd;">الحفظ</td><td style="padding: 10px; border: 1px solid #ddd;">{g_info['الحفظ']}</td></tr>
+                <tr><td style="padding: 10px; border: 1px solid #ddd;">الرواية</td><td style="padding: 10px; border: 1px solid #ddd;">{g_info['الرواية']}</td></tr>
+                <tr><td style="padding: 10px; border: 1px solid #ddd;">الدراية</td><td style="padding: 10px; border: 1px solid #ddd;">{g_info['الدراية']}</td></tr>
+                <tr><td style="padding: 10px; border: 1px solid #ddd;">الحضور</td><td style="padding: 10px; border: 1px solid #ddd;">{g_info['الحضور']}</td></tr>
             </table>
-            <div style="margin-top: 20px; font-size: 20px; font-weight: bold; color: #FF4D4D;">
-                <p>المعدل العام الإجمالي الحاصل عليه : {final_score} / 20</p>
-                <p>النتيجة والقرار النهائي للجنة الإدارية : <span style="color: {result_color}; text-decoration: none;">{result}</span></p>
+            <div style="margin-top: 25px; text-align: center; font-size: 20px; font-weight: bold; color: #2C3E50;">
+                <p>المعدل العام: {final_score} / 20</p>
             </div>
         </div>
         """, unsafe_allow_html=True)
