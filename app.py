@@ -4,10 +4,9 @@ import pandas as pd
 # 1. إعدادات واجهة التطبيق
 st.set_page_config(page_title="نظام الفرع المحلي للرابطة الوطنية للقرآن الكريم بالمكناسي", layout="wide", page_icon="🕌")
 
-# 2. إضافة التنسيقات البصرية المطلوبة
+# 2. إضافة التنسيقات البصرية وإجبار المتصفح على الاتجاه العربي
 st.markdown("""
     <style>
-    /* تفعيل اتجاه لغة الضاد وضبط مسافة علوية مريحة للعين */
     .block-container {
         padding-top: 2rem !important;
         padding-bottom: 0rem !important;
@@ -21,7 +20,6 @@ st.markdown("""
         text-align: right !important;
     }
     
-    /* توسيط الاستمارة والتبويبات */
     div[data-testid="stForm"], div[data-testid="stTab"] {
         direction: rtl !important;
     }
@@ -30,7 +28,6 @@ st.markdown("""
         max-width: 900px !important; 
     }
     
-    /* ضبط حقول الإدخال */
     input, select, textarea {
         direction: rtl !important;
         text-align: right !important;
@@ -39,7 +36,7 @@ st.markdown("""
         direction: rtl !important;
     }
     
-    /* 🔴 اسم الفرع الرئيسي */
+    /* اسم الفرع الرئيسي */
     .main-title { 
         color: #FF4D4D !important; 
         text-align: center !important;
@@ -49,7 +46,7 @@ st.markdown("""
         text-decoration: underline !important;
     } 
     
-    /* 🟢 عناوين الاستمارات والقوائم الموحدة */
+    /* عناوين القوائم والاستمارات الموحدة */
     .custom-heading { 
         color: #2ECC71 !important; 
         text-align: center !important;
@@ -66,30 +63,7 @@ st.markdown("""
         text-align: right !important;
     }
     
-    /* 🎨 تنسيقات مخصصة وعريضة لعناوين المراحل التعليمية */
-    .stage-title-1 {
-        color: #3498DB !important; /* أزرق فخم */
-        font-size: 26px !important;
-        font-weight: bold !important;
-        text-decoration: underline !important;
-        margin-top: 10px;
-    }
-    .stage-title-2 {
-        color: #E67E22 !important; /* برتقالي دافئ */
-        font-size: 26px !important;
-        font-weight: bold !important;
-        text-decoration: underline !important;
-        margin-top: 10px;
-    }
-    .stage-title-3 {
-        color: #9B5DE5 !important; /* بنفسجي ملكي */
-        font-size: 26px !important;
-        font-weight: bold !important;
-        text-decoration: underline !important;
-        margin-top: 10px;
-    }
-    
-    /* تجميل شكل التبويبات لعرض المراحل التعليمية */
+    /* تنسيق نصوص التبويبات الجانبية */
     button[data-testid="stMarkdownContainer"] p {
         font-size: 18px !important;
         font-weight: bold !important;
@@ -143,7 +117,7 @@ if choice == "تسجيل طالب جديد وتوزيعه":
         with col2:
             last_name = st.text_input("اللقب (اسم العائلة) :")
             cin = st.text_input("رقم بطاقة التعريف الوطنية / رقم القيد :")
-            st.write("") # موازنة بصريّة
+            st.write("") 
             chosen_unit = st.selectbox("تسكين في الوحدة البدائية :", stages_structure[chosen_stage])
             
         submitted = st.form_submit_button("حفظ بيانات الطالب وتوليد المعرف")
@@ -173,8 +147,10 @@ if choice == "تسجيل طالب جديد وتوزيعه":
     
     # محتويات تبويب المرحلة الأولى
     with tab1:
-        st.markdown('<p class="stage-title-1">📜 المرحلة الأولى: رواية الإمام قالون</p>', unsafe_allow_html=True)
+        # عناوين المراحل بخط عريض ملون وحجم أكبر بشكل مضمون ومجرب عبر HTML المباشر
+        st.markdown('<div style="color: #3498DB !important; font-size: 28px !important; font-weight: bold !important; font-family: \'Cairo\', sans-serif; text-decoration: underline; margin-bottom: 10px;">📜 المرحلة الأولى: رواية الإمام قالون</div>', unsafe_allow_html=True)
         st.info("تشمل هذه المرحلة ركيزة الرواية وبها 4 وحدات دراسية للارتقاء.")
+        
         for unit in stages_structure["المرحلة الأولى: رواية الإمام قالون"]:
             filtered_df = st.session_state.students_db[
                 (st.session_state.students_db['المرحلة الحالية'] == "المرحلة الأولى: رواية الإمام قالون") & 
@@ -183,21 +159,23 @@ if choice == "تسجيل طالب جديد وتوزيعه":
             st.markdown(f"🔹 **{unit}** (عدد الطلاب الحركيين حالياً: {len(filtered_df)})")
             if not filtered_df.empty:
                 st.dataframe(filtered_df[['المعرف', 'الاسم الثلاثي', 'اللقب', 'المهنة', 'بطاقة التعريف']], use_container_width=True)
-                # إضافة خيار حذف سريع وتجريبي للطلاب في التبويب مباشرة
-                with st.expander(f"🗑️ خيارات حذف سريعة لـ {unit}"):
-                    del_id = st.selectbox("اختر معرف الطالب لحذفه فوراً:", filtered_df['المعرف'], key=f"del_{unit}")
-                    if st.button("تأكيد الحذف السريع للطالب", key=f"btn_del_{unit}", type="primary"):
+                
+                # إضافة زر حذف مباشر وتلقائي لكل وحدة عبر حاوية مخصصة
+                with st.expander(f"🗑️ خيار حذف سريع لطلبة ({unit})"):
+                    del_id = st.selectbox("اختر معرف الطالب المراد حذفه نهائياً من هذه الوحدة:", filtered_df['المعرف'], key=f"del_tab1_{unit}")
+                    if st.button("تأكيد الحذف الفوري للطالب", key=f"btn_del_tab1_{unit}", type="primary"):
                         st.session_state.students_db = st.session_state.students_db[st.session_state.students_db['المعرف'] != del_id].reset_index(drop=True)
                         st.session_state.grades_db = st.session_state.grades_db[st.session_state.grades_db['المعرف'] != del_id].reset_index(drop=True)
-                        st.success("🗑️ تم الحذف بنجاح!")
+                        st.success("🗑️ تم حذف الطالب بنجاح وإعادة تحديث اللائحة!")
                         st.rerun()
             else:
                 st.caption("لا يوجد طلاب مسجلون في هذه الوحدة حالياً.")
                 
     # محتويات تبويب المرحلة الثانية
     with tab2:
-        st.markdown('<p class="stage-title-2">📖 المرحلة الثانية: قراءة نافع وحفص عن عاصم</p>', unsafe_allow_html=True)
+        st.markdown('<div style="color: #E67E22 !important; font-size: 28px !important; font-weight: bold !important; font-family: \'Cairo\', sans-serif; text-decoration: underline; margin-bottom: 10px;">📖 المرحلة الثانية: قراءة نافع وحفص عن عاصم</div>', unsafe_allow_html=True)
         st.info("تشمل قراءة الإمام نافع برافديه (قالون وورش) إضافةً إلى رواية حفص وبها 3 وحدات.")
+        
         for unit in stages_structure["المرحلة الثانية: قراءة نافع وحفص عن عاصم"]:
             filtered_df = st.session_state.students_db[
                 (st.session_state.students_db['المرحلة الحالية'] == "المرحلة الثانية: قراءة نافع وحفص عن عاصم") & 
@@ -206,20 +184,22 @@ if choice == "تسجيل طالب جديد وتوزيعه":
             st.markdown(f"🔹 **{unit}** (عدد الطلاب الحركيين حالياً: {len(filtered_df)})")
             if not filtered_df.empty:
                 st.dataframe(filtered_df[['المعرف', 'الاسم الثلاثي', 'اللقب', 'المهنة', 'بطاقة التعريف']], use_container_width=True)
-                with st.expander(f"🗑️ خيارات حذف سريعة لـ {unit}"):
-                    del_id = st.selectbox("اختر معرف الطالب لحذفه فوراً:", filtered_df['المعرف'], key=f"del_{unit}")
-                    if st.button("تأكيد الحذف السريع للطالب", key=f"btn_del_{unit}", type="primary"):
+                
+                with st.expander(f"🗑️ خيار حذف سريع لطلبة ({unit})"):
+                    del_id = st.selectbox("اختر معرف الطالب المراد حذفه نهائياً من هذه الوحدة:", filtered_df['المعرف'], key=f"del_tab2_{unit}")
+                    if st.button("تأكيد الحذف الفوري للطالب", key=f"btn_del_tab2_{unit}", type="primary"):
                         st.session_state.students_db = st.session_state.students_db[st.session_state.students_db['المعرف'] != del_id].reset_index(drop=True)
                         st.session_state.grades_db = st.session_state.grades_db[st.session_state.grades_db['المعرف'] != del_id].reset_index(drop=True)
-                        st.success("🗑️ تم الحذف بنجاح!")
+                        st.success("🗑️ تم حذف الطالب بنجاح وإعادة تحديث اللائحة!")
                         st.rerun()
             else:
                 st.caption("لا يوجد طلاب مسجلون في هذه الوحدة حالياً.")
 
     # محتويات تبويب المرحلة الثالثة
     with tab3:
-        st.markdown('<p class="stage-title-3">🕌 المرحلة الثالثة: علم القراءات المتقدمة</p>', unsafe_allow_html=True)
+        st.markdown('<div style="color: #9B5DE5 !important; font-size: 28px !important; font-weight: bold !important; font-family: \'Cairo\', sans-serif; text-decoration: underline; margin-bottom: 10px;">🕌 المرحلة الثالثة: علم القراءات المتقدمة</div>', unsafe_allow_html=True)
         st.info("مرحلة علم القراءات المتقدمة والأسانيد وبها 4 وحدات كبرى.")
+        
         for unit in stages_structure["المرحلة الثالثة: القراءات"]:
             filtered_df = st.session_state.students_db[
                 (st.session_state.students_db['المرحلة الحالية'] == "المرحلة الثالثة: القراءات") & 
@@ -228,12 +208,13 @@ if choice == "تسجيل طالب جديد وتوزيعه":
             st.markdown(f"🔹 **{unit}** (عدد الطلاب الحركيين حالياً: {len(filtered_df)})")
             if not filtered_df.empty:
                 st.dataframe(filtered_df[['المعرف', 'الاسم الثلاثي', 'اللقب', 'المهنة', 'بطاقة التعريف']], use_container_width=True)
-                with st.expander(f"🗑️ خيارات حذف سريعة لـ {unit}"):
-                    del_id = st.selectbox("اختر معرف الطالب لحذفه فوراً:", filtered_df['المعرف'], key=f"del_{unit}")
-                    if st.button("تأكيد الحذف السريع للطالب", key=f"btn_del_{unit}", type="primary"):
+                
+                with st.expander(f"🗑️ خيار حذف سريع لطلبة ({unit})"):
+                    del_id = st.selectbox("اختر معرف الطالب المراد حذفه نهائياً من هذه الوحدة:", filtered_df['المعرف'], key=f"del_tab3_{unit}")
+                    if st.button("تأكيد الحذف الفوري للطالب", key=f"btn_del_tab3_{unit}", type="primary"):
                         st.session_state.students_db = st.session_state.students_db[st.session_state.students_db['المعرف'] != del_id].reset_index(drop=True)
                         st.session_state.grades_db = st.session_state.grades_db[st.session_state.grades_db['المعرف'] != del_id].reset_index(drop=True)
-                        st.success("🗑️ تم الحذف بنجاح!")
+                        st.success("🗑️ تم حذف الطالب بنجاح وإعادة تحديث اللائحة!")
                         st.rerun()
             else:
                 st.caption("لا يوجد طلاب مسجلون في هذه الوحدة حالياً.")
