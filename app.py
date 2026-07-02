@@ -47,16 +47,28 @@ st.markdown("""
     } 
     
     /* عناوين القوائم والاستمارات الموحدة */
-    .custom-heading { 
-        color: #2ECC71 !important; 
-        text-align: center !important;
-        font-family: 'Cairo', sans-serif;
-        font-weight: bold;
-        font-size: 24px !important; 
-        text-decoration: underline !important; 
+/* 🎨 تنسيقات مخصصة وعريضة لعناوين المراحل التعليمية */
+    .stage-title-1 {
+        color: #1A5276 !important; /* أزرق ملكي */
+        font-size: 28px !important;
+        font-weight: bold !important;
+        text-decoration: underline !important;
         margin-top: 15px;
-        margin-bottom: 15px;
     }
+    .stage-title-2 {
+        color: #B03A2E !important; /* أحمر قرميدي */
+        font-size: 28px !important;
+        font-weight: bold !important;
+        text-decoration: underline !important;
+        margin-top: 15px;
+    }
+    .stage-title-3 {
+        color: #1D8348 !important; /* أخضر غامق */
+        font-size: 28px !important;
+        font-weight: bold !important;
+        text-decoration: underline !important;
+        margin-top: 15px;
+    }    }
     
     h2, h3, h4 {
         font-size: 24px !important;
